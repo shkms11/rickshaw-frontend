@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import RegistrationForm from "@/features/auth/components/RegistrationForm";
+import LoginForm from "@/features/auth/components/LoginForm";
 
 import type { Mode, Role, TextPack } from "@/shared/types/home.types";
 
@@ -24,26 +26,18 @@ const roleStyles: Record<Role, string> = {
 function RoleButton({
   label,
   role,
-  loading,
-  disabled,
   onClick,
 }: {
   label: string;
   role: Role;
-  loading?: boolean;
-  disabled?: boolean;
   onClick: () => void;
 }) {
   return (
     <Button
       onClick={onClick}
-      disabled={disabled || loading}
-      aria-busy={loading}
-      className={`h-14 w-full rounded-xl font-semibold ${
-        roleStyles[role]
-      } ${loading ? "cursor-not-allowed opacity-70" : ""}`}
+      className={`h-14 w-full rounded-xl font-semibold ${roleStyles[role]}`}
     >
-      {loading ? "Loading..." : label}
+      {label}
     </Button>
   );
 }
@@ -57,19 +51,54 @@ export function AuthCard({
   onBack,
   onSelectRole,
 }: Props) {
-  const [loadingRole, setLoadingRole] = useState<Role | null>(null);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [selectedLoginRole, setSelectedLoginRole] = useState<Role | null>(null);
 
-  const handleRoleSelect = (role: Role) => {
-    if (loadingRole) return;
+  if (mode === "register" && selectedRole) {
+    return (
+      <div className="p-6 sm:p-7">
+        <RegistrationForm
+          role={selectedRole}
+          onBack={() => setSelectedRole(null)}
+          onSubmit={(data) => {
+            console.log("Registration data:", data);
+            // Connect registration API here.
+          }}
+        />
+      </div>
+    );
+  }
 
-    setLoadingRole(role);
-
-    setTimeout(() => {
-      onSelectRole(role);
-    }, 250);
-  };
+  if (mode === "login" && selectedLoginRole) {
+    return (
+      <div className="p-6 sm:p-7">
+        <LoginForm
+          role={selectedLoginRole}
+          onBack={() => setSelectedLoginRole(null)}
+          onSubmit={(data) => {
+            console.log("Login data:", data);
+            // Connect login API here.
+          }}
+        />
+      </div>
+    );
+  }
 
   const isRoleStep = step === 2;
+
+  const handleRoleSelect = (role: Role) => {
+    if (mode === "register") {
+      setSelectedRole(role);
+      return;
+    }
+
+    if (mode === "login") {
+      setSelectedLoginRole(role);
+      return;
+    }
+
+    onSelectRole(role);
+  };
 
   return (
     <div className="p-6 sm:p-7">
@@ -107,24 +136,18 @@ export function AuthCard({
               <RoleButton
                 label={text.driver}
                 role="driver"
-                loading={loadingRole === "driver"}
-                disabled={!!loadingRole}
                 onClick={() => handleRoleSelect("driver")}
               />
 
               <RoleButton
                 label={text.owner}
                 role="owner"
-                loading={loadingRole === "owner"}
-                disabled={!!loadingRole}
                 onClick={() => handleRoleSelect("owner")}
               />
 
               <RoleButton
                 label={text.admin}
                 role="admin"
-                loading={loadingRole === "admin"}
-                disabled={!!loadingRole}
                 onClick={() => handleRoleSelect("admin")}
               />
             </div>
@@ -133,7 +156,6 @@ export function AuthCard({
               variant="outline"
               className="h-11 w-full rounded-xl"
               onClick={onBack}
-              disabled={!!loadingRole}
             >
               {text.back}
             </Button>
