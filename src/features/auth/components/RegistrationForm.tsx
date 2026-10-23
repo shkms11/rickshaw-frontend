@@ -17,6 +17,7 @@ export type FormData = {
   name: string;
   phone: string;
   email: string;
+  password: string;
   nid: string;
   address: string;
   extra: string;
@@ -52,28 +53,62 @@ export default function RegistrationForm({
     name: "",
     phone: "",
     email: "",
+    password: "",
     nid: "",
     address: "",
     extra: "",
   });
 
   const [idImage, setIdImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   function update(field: keyof typeof form, value: string) {
-    setForm((previous) => ({
-      ...previous,
-      [field]: value,
-    }));
+    setForm((previous) => ({ ...previous, [field]: value }));
   }
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setMessage("");
 
-    onSubmit?.({
-      role,
-      ...form,
-      idImage,
-    });
+    if (role === "admin") {
+      setMessage(
+        "Admin accounts must be created by an authorized administrator.",
+      );
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email.trim().toLowerCase(),
+          password: form.password,
+          role: role.toUpperCase(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed.");
+      }
+
+      onSubmit?.({ role, ...form, idImage });
+      setMessage("Registration successful!");
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Could not connect to the server.",
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -92,7 +127,6 @@ export default function RegistrationForm({
         <Input
           id="name"
           autoComplete="name"
-          placeholder="Enter full name"
           value={form.name}
           onChange={(e) => update("name", e.target.value)}
           required
@@ -104,7 +138,6 @@ export default function RegistrationForm({
         <Input
           id="phone"
           type="tel"
-          inputMode="tel"
           autoComplete="tel"
           placeholder="01XXXXXXXXX"
           value={form.phone}
@@ -114,14 +147,27 @@ export default function RegistrationForm({
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="email">Email (Optional)</label>
+        <label htmlFor="email">Email</label>
         <Input
           id="email"
           type="email"
           autoComplete="email"
-          placeholder="Enter email address"
           value={form.email}
           onChange={(e) => update("email", e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="password">Password</label>
+        <Input
+          id="password"
+          type="password"
+          autoComplete="new-password"
+          minLength={8}
+          value={form.password}
+          onChange={(e) => update("password", e.target.value)}
+          required
         />
       </div>
 
@@ -129,7 +175,6 @@ export default function RegistrationForm({
         <label htmlFor="nid">NID Number</label>
         <Input
           id="nid"
-          placeholder="Enter NID number"
           value={form.nid}
           onChange={(e) => update("nid", e.target.value)}
           required
@@ -141,7 +186,6 @@ export default function RegistrationForm({
         <Input
           id="address"
           autoComplete="street-address"
-          placeholder="Enter address"
           value={form.address}
           onChange={(e) => update("address", e.target.value)}
           required
@@ -152,16 +196,25 @@ export default function RegistrationForm({
         <label htmlFor="extra">{config.extraLabel}</label>
         <Input
           id="extra"
-          placeholder={config.extraPlaceholder}
           value={form.extra}
           onChange={(e) => update("extra", e.target.value)}
           required
         />
       </div>
 
-      <Button type="submit" className="w-full bg-green-700 hover:bg-green-800">
-        Register as {role.charAt(0).toUpperCase() + role.slice(1)}
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-green-700 hover:bg-green-800"
+      >
+        {loading ? "Registering..." : `Register as ${role}`}
       </Button>
+
+      {message && (
+        <p role="status" className="text-sm">
+          {message}
+        </p>
+      )}
 
       {onBack && (
         <Button
