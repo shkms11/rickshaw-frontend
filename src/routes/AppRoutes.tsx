@@ -10,40 +10,40 @@ import DriverDashboardPage from "@/pages/driver/DriverDashboardPage";
 import RequireRole from "@/shared/components/RequireRole";
 
 export default function AppRoutes() {
-  return (
-    <Routes>
-      <Route element={<AppLayout />}>
-        <Route path="/" element={<HomePage />} />
+    return (
+        <Routes>
+            <Route element={<AppLayout />}>
+                <Route path="/" element={<HomePage />} />
 
-        <Route
-          path="/admin"
-          element={
-            <RequireRole role="admin">
-              <AdminDashboardPage />
-            </RequireRole>
-          }
-        />
+                <Route
+                    path="/admin"
+                    element={
+                        <RequireRole role={["admin", "super_admin"]}>
+                            <AdminDashboardPage />
+                        </RequireRole>
+                    }
+                />
 
-        <Route
-          path="/owner"
-          element={
-            <RequireRole role="owner">
-              <OwnerDashboardPage />
-            </RequireRole>
-          }
-        />
+                <Route
+                    path="/owner"
+                    element={
+                        <RequireRole role="owner">
+                            <OwnerDashboardPage />
+                        </RequireRole>
+                    }
+                />
 
-        <Route
-          path="/driver"
-          element={
-            <RequireRole role="driver">
-              <DriverDashboardPage />
-            </RequireRole>
-          }
-        />
-      </Route>
+                <Route
+                    path="/driver"
+                    element={
+                        <RequireRole role="driver">
+                            <DriverDashboardPage />
+                        </RequireRole>
+                    }
+                />
+            </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  );
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+    );
 }

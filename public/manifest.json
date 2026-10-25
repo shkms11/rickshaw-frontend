@@ -1,8 +1,8 @@
 {
-  "name": "Traffic System",
-  "short_name": "Traffic",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000"
+    "name": "Rickshaw Frontend",
+    "short_name": "Rickshaw",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000"
 }

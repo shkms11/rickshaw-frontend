@@ -1,25 +1,25 @@
 import { Navigate } from "react-router-dom";
 
-type Role = "driver" | "owner" | "admin";
+type Role = "driver" | "owner" | "admin" | "super_admin";
 
 type Props = {
-  role: Role;
-  children: React.ReactNode;
+    role: Role | Role[];
+    children: React.ReactNode;
 };
 
 export default function RequireRole({ role, children }: Props) {
-  const savedRole = localStorage.getItem("role") as Role | null;
+    const savedRole = localStorage.getItem("role") as Role | null;
+    const token = localStorage.getItem("token");
+    const allowedRoles = Array.isArray(role) ? role : [role];
 
-  // 🚨 No role found → treat as unauthenticated
-  if (!savedRole) {
-    return <Navigate to="/" replace />;
-  }
+    if (!savedRole || !token) {
+        return <Navigate to="/" replace />;
+    }
 
-  // 🚨 Role mismatch → block access
-  if (savedRole !== role) {
-    return <Navigate to="/" replace />;
-  }
+    if (!allowedRoles.includes(savedRole)) {
+        return <Navigate to="/" replace />;
+    }
 
-  // ✅ Allowed
-  return <>{children}</>;
+    // ✅ Allowed
+    return <>{children}</>;
 }

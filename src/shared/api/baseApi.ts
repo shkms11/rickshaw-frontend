@@ -1,23 +1,31 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
-  reducerPath: "api",
+    reducerPath: "api",
 
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL ?? "http://localhost:5000/api",
+    baseQuery: fetchBaseQuery({
+        baseUrl: import.meta.env.VITE_API_URL ?? "http://localhost:5000/api",
 
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem("token");
+        prepareHeaders: (headers) => {
+            const token = localStorage.getItem("token");
 
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
+            if (token) {
+                headers.set("Authorization", `Bearer ${token}`);
+            }
 
-      return headers;
-    },
-  }),
+            return headers;
+        },
+    }),
 
-  tagTypes: ["Admin", "User", "Driver", "Trip", "Payment", "Complaint"],
+    tagTypes: [
+        "Admin",
+        "User",
+        "Driver",
+        "Trip",
+        "Payment",
+        "Complaint",
+        "Approval",
+    ],
 
-  endpoints: () => ({}),
+    endpoints: () => ({}),
 });
