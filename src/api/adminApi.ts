@@ -2,16 +2,22 @@ import { api } from "@/shared/api/baseApi";
 
 export type AdminSearchType =
     | "All"
-    | "Users"
     | "Drivers"
-    | "Trips"
-    | "Payments"
+    | "Owners"
+    | "Rickshaws"
+    | "Location"
     | "Complaints";
 
 export type AdminSearchResult = {
     id: string;
     name: string;
-    type: "user" | "driver" | "trip" | "payment" | "complaint";
+    type: "driver"
+    | "owner"
+    | "user"
+    | "rickshaw"
+    | "location"
+    | "payment"
+    | "complaint";
     description?: string;
 };
 
@@ -26,21 +32,30 @@ export type AdminSearchParams = {
 };
 
 export type AdminApproval = {
-    userId: string;
+    id: string;
     name?: string;
     email?: string;
+    phone?: string;
     role?: string;
     createdAt?: string;
     user?: {
         id?: string;
         name?: string;
         email?: string;
+        phone?: string;
         role?: string;
     };
 };
 
 export type AdminApprovalsResponse = {
     approvals: AdminApproval[];
+};
+
+export type AdminDashboardSummary = {
+    totalRickshaws: number;
+    onlineDrivers: number;
+    activeTrips: number;
+    openComplaints: number;
 };
 
 export type UpdateApprovalParams = {
@@ -50,6 +65,9 @@ export type UpdateApprovalParams = {
 
 export const adminApi = api.injectEndpoints({
     endpoints: (builder) => ({
+        getAdminDashboardSummary: builder.query<AdminDashboardSummary, void>({
+            query: () => "/admin/dashboard-summary",
+        }),
         getAdminApprovals: builder.query<AdminApprovalsResponse, void>({
             query: () => ({
                 url: "/admin/approvals",
@@ -81,6 +99,7 @@ export const adminApi = api.injectEndpoints({
 });
 
 export const {
+    useGetAdminDashboardSummaryQuery,
     useGetAdminApprovalsQuery,
     useUpdateAdminApprovalMutation,
     useLazySearchAdminQuery,

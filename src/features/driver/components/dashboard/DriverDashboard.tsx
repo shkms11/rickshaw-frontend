@@ -1,87 +1,32 @@
-import type { Driver } from "../../types/driver.type";
+import { Card } from "@/components/ui/card";
+import DriverGpsPanel from "@/features/tracking/components/DriverGpsPanel";
+import { useAppSelector } from "@/app/hooks";
+import { translate } from "@/shared/i18n";
 
-import DriverProfile from "../DriverProfile";
-
-import AssignedRickshawCard from "./AssignedRickshawCard";
-import RunningStatusWidget from "./RunningStatusWidget";
-
-import RealTimeTrackingWidget from "./RealTimeTrackingWidget";
-
-import MarkRickshawLostCard from "./MarkRickshawLostCard";
-import RickshawServiceStatusWidget from "./RickshawServiceStatusWidget";
-
-import DriverWalletWidget from "./DriverWalletWidget";
-
-import DriverNoticeBoard from "@/features/driver/components/dashboard/DriverNoticeBoard";
-
-import HealthInfoWidget from "../HealthInfoWidget";
-import HydrationReminderWidget from "../HydrationReminderWidget";
-
-import PremiumFeatureGate from "./PremiumFeatureGate";
-
-type Props = {
-  driver: Driver;
+export type DriverAccount = {
+    name: string;
+    email: string;
+    driver?: { licenseNo?: string } | null;
 };
 
-export default function DriverDashboard({ driver }: Props) {
-  return (
-    <div className="space-y-8">
-      {/* ===================== */}
-      {/* PROFILE */}
-      {/* ===================== */}
-      <DriverProfile driver={driver} />
+export default function DriverDashboard({ driver }: { driver: DriverAccount }) {
+    const { lang } = useAppSelector((state) => state.ui);
 
-      {/* ===================== */}
-      {/* CORE STATUS */}
-      {/* ===================== */}
-      <section className="grid gap-4 md:grid-cols-2">
-        <AssignedRickshawCard driver={driver} />
-        <RunningStatusWidget />
-      </section>
-
-      {/* ===================== */}
-      {/* LIVE TRACKING */}
-      {/* ===================== */}
-      <section>
-        <RealTimeTrackingWidget />
-      </section>
-
-      {/* ===================== */}
-      {/* OPERATIONS */}
-      {/* ===================== */}
-      <section className="grid gap-4 md:grid-cols-2">
-        <MarkRickshawLostCard />
-        <RickshawServiceStatusWidget />
-      </section>
-
-      {/* ===================== */}
-      {/* FINANCE */}
-      {/* ===================== */}
-      <section>
-        <DriverWalletWidget driver={driver} />
-      </section>
-
-      {/* ===================== */}
-      {/* SUPPORT & NOTICES */}
-      {/* ===================== */}
-      <section>
-        <DriverNoticeBoard />
-      </section>
-
-      {/* ===================== */}
-      {/* HEALTH & WELLBEING */}
-      {/* ===================== */}
-      <section className="grid gap-4 md:grid-cols-2">
-        <HealthInfoWidget />
-        <HydrationReminderWidget />
-      </section>
-
-      {/* ===================== */}
-      {/* PREMIUM */}
-      {/* ===================== */}
-      <section>
-        <PremiumFeatureGate />
-      </section>
-    </div>
-  );
+    return (
+        <div className="space-y-5">
+            <Card className="p-5 sm:p-6">
+                <p className="text-sm text-muted-foreground">
+                    {translate(lang, "Signed in as driver")}
+                </p>
+                <h2 className="mt-1 text-2xl font-semibold">{driver.name}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">{driver.email}</p>
+                {driver.driver?.licenseNo && (
+                    <p className="mt-3 text-sm">
+                        {translate(lang, "Driving license")}: {driver.driver.licenseNo}
+                    </p>
+                )}
+            </Card>
+            <DriverGpsPanel />
+        </div>
+    );
 }

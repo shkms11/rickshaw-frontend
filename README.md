@@ -1,75 +1,33 @@
-# rickshaw-frontend
+# Rickshaw Frontend
 
-React + TypeScript + Vite frontend for the rickshaw traffic and tracking system.
+React, TypeScript, and Vite client for the Rickshaw Traffic Management System.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Run locally
 
-Currently, two official plugins are available:
+1. Start the backend at `http://localhost:5000` (see the backend README).
+2. From this directory, run:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+   ```powershell
+   npm ci
+   npm run dev
+   ```
 
-## React Compiler
+3. Open the Vite URL shown in the terminal. To use another API URL, set
+   `VITE_API_URL` (for example, `http://localhost:5000/api`) in a local `.env`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Public driver and owner registrations require administrator approval before
+login. The header language control switches between English and Bangla, and
+language and text-size preferences are saved in the browser.
 
-## Expanding the ESLint configuration
+Drivers can start GPS sharing from their dashboard after allowing browser
+location permission. Their owner sees recent reports on the live map; admins
+see all active reports. Sharing stops when the driver stops it or closes the
+dashboard, and reports older than two minutes are not shown as live. GPS
+requires HTTPS in production (localhost is allowed during development).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Verify
 
-```js
-export default defineConfig([
-    globalIgnores(["dist"]),
-    {
-        files: ["**/*.{ts,tsx}"],
-        extends: [
-            // Other configs...
-
-            // Remove tseslint.configs.recommended and replace with this
-            tseslint.configs.recommendedTypeChecked,
-            // Alternatively, use this for stricter rules
-            tseslint.configs.strictTypeChecked,
-            // Optionally, add this for stylistic rules
-            tseslint.configs.stylisticTypeChecked,
-
-            // Other configs...
-        ],
-        languageOptions: {
-            parserOptions: {
-                project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-                tsconfigRootDir: import.meta.dirname,
-            },
-            // other options...
-        },
-    },
-]);
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
-
-export default defineConfig([
-    globalIgnores(["dist"]),
-    {
-        files: ["**/*.{ts,tsx}"],
-        extends: [
-            // Other configs...
-            // Enable lint rules for React
-            reactX.configs["recommended-typescript"],
-            // Enable lint rules for React DOM
-            reactDom.configs.recommended,
-        ],
-        languageOptions: {
-            parserOptions: {
-                project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-                tsconfigRootDir: import.meta.dirname,
-            },
-            // other options...
-        },
-    },
-]);
+```powershell
+npm run build
+npm run lint
 ```

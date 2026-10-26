@@ -6,6 +6,7 @@ import logo from "@/assets/logo.jpg";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { toggleLang, toggleLargeText } from "@/store/uiSlice";
 import { useLocation, useNavigate } from "react-router-dom";
+import { translate } from "@/shared/i18n";
 
 // Optional bilingual page title.
 type Props = {
@@ -29,6 +30,11 @@ export function Header({ title }: Props) {
 
     // Hide on scroll down; show on scroll up.
     useEffect(() => {
+        document.documentElement.lang = lang;
+        document.documentElement.classList.toggle("large-text", largeText);
+    }, [lang, largeText]);
+
+    useEffect(() => {
         const handleScroll = () => {
             const currentY = window.scrollY;
 
@@ -44,7 +50,7 @@ export function Header({ title }: Props) {
 
     // Select the page title or use a language-based default.
     const pageTitle =
-        title?.[lang] ?? (lang === "bn" ? "রিকশা সিস্টেম" : "Rickshaw System");
+        title?.[lang] ?? translate(lang, "Rickshaw System");
 
     // Show logout only on driver, owner, and admin routes.
     const showLogout = ["/driver", "/owner", "/admin"].some((path) =>
@@ -57,6 +63,20 @@ export function Header({ title }: Props) {
         localStorage.removeItem("user");
         localStorage.removeItem("role");
         sessionStorage.clear();
+        navigate("/");
+    };
+
+    const handleHome = () => {
+        if (showLogout) {
+            const confirmed = window.confirm(
+                lang === "bn"
+                    ? "হোমে ফিরলে আপনি লগআউট হবেন। চালিয়ে যাবেন?"
+                    : "Going home will log you out. Continue?",
+            );
+            if (!confirmed) return;
+            handleLogout();
+            return;
+        }
         navigate("/");
     };
 
@@ -76,8 +96,8 @@ export function Header({ title }: Props) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => navigate("/")}
-                        aria-label="Home"
+                        onClick={handleHome}
+                        aria-label={translate(lang, "Home")}
                         className="shrink-0"
                     >
                         <Home className="h-5 w-5" />
@@ -106,17 +126,29 @@ export function Header({ title }: Props) {
                         type="button"
                         variant="outline"
                         className={buttonSize}
-                        onClick={() => dispatch(toggleLang())}
+                        aria-label={lang === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
+                        onClick={() => {
+                            const nextLang = lang === "bn" ? "en" : "bn";
+                            window.localStorage.setItem("lang", nextLang);
+                            dispatch(toggleLang());
+                        }}
                     >
                         <Languages className="mr-2 h-4 w-4" />
-                        {lang.toUpperCase()}
+                        {lang === "bn" ? "EN" : "বাংলা"}
                     </Button>
 
                     <Button
                         type="button"
                         variant="outline"
                         className={buttonSize}
-                        onClick={() => dispatch(toggleLargeText())}
+                        aria-label={lang === "bn" ? "বড় লেখা চালু বা বন্ধ করুন" : "Toggle larger text"}
+                        onClick={() => {
+                            window.localStorage.setItem(
+                                "largeText",
+                                String(!largeText),
+                            );
+                            dispatch(toggleLargeText());
+                        }}
                     >
                         <TextCursorInput className="mr-2 h-4 w-4" />
                         A+
@@ -131,7 +163,7 @@ export function Header({ title }: Props) {
                             onClick={handleLogout}
                         >
                             <LogOut className="mr-2 h-4 w-4" />
-                            Logout
+                            {translate(lang, "Logout")}
                         </Button>
                     )}
                 </div>

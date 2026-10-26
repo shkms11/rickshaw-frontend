@@ -7,13 +7,18 @@ import {
     useUpdateAdminApprovalMutation,
     type AdminApproval,
 } from "@/api/adminApi";
+import { useAppSelector } from "@/app/hooks";
+import { translate } from "@/shared/i18n";
 
 function displayName(approval: AdminApproval) {
     return approval.name ?? approval.user?.name ?? "Unnamed account";
 }
 
 function displayEmail(approval: AdminApproval) {
-    return approval.email ?? approval.user?.email ?? "Email unavailable";
+    return [
+        approval.phone ?? approval.user?.phone,
+        approval.email ?? approval.user?.email,
+    ].filter(Boolean).join(" · ") || "Contact unavailable";
 }
 
 function displayRole(approval: AdminApproval) {
@@ -21,6 +26,7 @@ function displayRole(approval: AdminApproval) {
 }
 
 export default function AdminApprovals() {
+    const { lang } = useAppSelector((state) => state.ui);
     const { data, isLoading, isError, refetch } = useGetAdminApprovalsQuery();
     const [updateApproval, { isLoading: isUpdating, error: updateError }] =
         useUpdateAdminApprovalMutation();
@@ -49,23 +55,25 @@ export default function AdminApprovals() {
                     onClick={() => void refetch()}
                     disabled={isLoading}
                 >
-                    Refresh
+                    {translate(lang, "Refresh")}
                 </Button>
             </div>
 
             {isLoading ? (
                 <div className="flex items-center gap-2 p-6 text-sm text-muted-foreground">
                     <LoaderCircle className="size-4 animate-spin" />
-                    Loading pending registrations...
+                    {translate(lang, "Loading pending registrations...")}
                 </div>
             ) : isError ? (
                 <p role="alert" className="p-6 text-sm text-destructive">
-                    Could not load registrations. Confirm you are signed in as
-                    an admin and try again.
+                    {translate(
+                        lang,
+                        "Could not load registrations. Confirm you are signed in as an admin and try again.",
+                    )}
                 </p>
             ) : approvals.length === 0 ? (
                 <p className="p-6 text-sm text-muted-foreground">
-                    There are no registrations waiting for approval.
+                    {translate(lang, "There are no registrations waiting for approval.")}
                 </p>
             ) : (
                 <div className="divide-y">
@@ -73,7 +81,7 @@ export default function AdminApprovals() {
                         const name = displayName(approval);
                         return (
                             <div
-                                key={approval.userId}
+                                key={approval.id}
                                 className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between"
                             >
                                 <div className="min-w-0">
@@ -97,14 +105,14 @@ export default function AdminApprovals() {
                                         disabled={isUpdating}
                                         onClick={() =>
                                             void decide(
-                                                approval.userId,
+                                                approval.id,
                                                 "APPROVED",
                                             )
                                         }
                                         aria-label={`Approve ${name}`}
                                     >
                                         <Check />
-                                        Approve
+                                        {translate(lang, "Approve")}
                                     </Button>
                                     <Button
                                         type="button"
@@ -113,14 +121,14 @@ export default function AdminApprovals() {
                                         disabled={isUpdating}
                                         onClick={() =>
                                             void decide(
-                                                approval.userId,
+                                                approval.id,
                                                 "REJECTED",
                                             )
                                         }
                                         aria-label={`Reject ${name}`}
                                     >
                                         <X />
-                                        Reject
+                                        {translate(lang, "Reject")}
                                     </Button>
                                 </div>
                             </div>
@@ -134,7 +142,10 @@ export default function AdminApprovals() {
                     role="alert"
                     className="border-t p-4 text-sm text-destructive"
                 >
-                    The approval decision could not be saved. Please try again.
+                    {translate(
+                        lang,
+                        "The approval decision could not be saved. Please try again.",
+                    )}
                 </p>
             )}
         </Card>

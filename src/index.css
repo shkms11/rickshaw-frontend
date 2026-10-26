@@ -127,23 +127,7 @@
     @apply font-sans;
   }
 }
-.lost-marker {
-  filter: hue-rotate(300deg) saturate(5);
-  animation: pulse 1s infinite;
-}
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
+  html.large-text {
+    font-size: 112.5%;
   }
-  50% {
-    transform: scale(1.25);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-

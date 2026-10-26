@@ -1,32 +1,42 @@
-import DashboardLayout from "../../shared/components/layout/DashboardLayout";
-import DriverDashboard from "@/features/driver/components/dashboard/DriverDashboard";
-import type { Driver } from "@/features/driver/types/driver.type";
+import DashboardLayout from "@/shared/components/layout/DashboardLayout";
+import DriverDashboard, {
+    type DriverAccount,
+} from "@/features/driver/components/dashboard/DriverDashboard";
 
 export default function DriverDashboardPage() {
-  const driver: Driver = {
-    id: "1",
-    name: "Rahim Uddin",
-    phone: "017XXXXXXXX",
-    nid: "1234567890",
-    licenseNumber: "D-45892",
+    let driver: DriverAccount = {
+        name: "Driver",
+        email: "",
+    };
+    try {
+        const user: unknown = JSON.parse(localStorage.getItem("user") ?? "null");
+        if (
+            typeof user === "object" &&
+            user !== null &&
+            "name" in user &&
+            typeof user.name === "string" &&
+            "email" in user &&
+            typeof user.email === "string"
+        ) {
+            driver = {
+                name: user.name,
+                email: user.email,
+                ...("driver" in user &&
+                typeof user.driver === "object" &&
+                user.driver !== null &&
+                "licenseNo" in user.driver &&
+                typeof user.driver.licenseNo === "string"
+                    ? { driver: { licenseNo: user.driver.licenseNo } }
+                    : {}),
+            };
+        }
+    } catch {
+        localStorage.removeItem("user");
+    }
 
-    status: "active",
-
-    address: {
-      line1: "",
-      area: "Kaliganj",
-      city: "Dhaka",
-      country: "Bangladesh",
-    },
-
-    walletBalance: 1250,
-    todayEarnings: 320,
-    payoutStatus: "ready_to_withdraw",
-  };
-
-  return (
-    <DashboardLayout title="Driver Dashboard">
-      <DriverDashboard driver={driver} />
-    </DashboardLayout>
-  );
+    return (
+        <DashboardLayout title="Driver Dashboard">
+            <DriverDashboard driver={driver} />
+        </DashboardLayout>
+    );
 }

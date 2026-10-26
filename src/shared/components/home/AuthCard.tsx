@@ -1,166 +1,195 @@
 import { useState } from "react";
+import { ArrowLeft, Bike, Building2, ShieldCheck, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import RegistrationForm from "@/features/auth/components/RegistrationForm";
+import { Card } from "@/components/ui/card";
 import LoginForm, {
     type AuthenticatedRole,
+    type LoginRole,
 } from "@/features/auth/components/LoginForm";
+import RegistrationForm from "@/features/auth/components/RegistrationForm";
+import { useAppSelector } from "@/app/hooks";
+import { translate } from "@/shared/i18n";
+import type { TextPack } from "@/shared/types/home.types";
 
-import type { Mode, Role, TextPack } from "@/shared/types/home.types";
-
+type AuthMode = "login" | "register";
 type Props = {
     text: TextPack;
-    step: 1 | 2;
-    mode: Mode | null;
-    onLogin: () => void;
-    onRegister: () => void;
-    onBack: () => void;
-    onSelectRole: (role: Role) => void;
     onAuthenticated: (role: AuthenticatedRole) => void;
 };
 
-const roleStyles: Record<Role, string> = {
-    driver: "bg-emerald-700 text-white hover:bg-emerald-800",
-    owner: "bg-white border border-emerald-200 text-emerald-900 hover:bg-emerald-50",
-    admin: "bg-amber-50 border border-amber-200 text-amber-800 hover:bg-amber-100",
-};
+const roles: Array<{
+    id: LoginRole;
+    title: keyof Pick<TextPack, "driver" | "owner" | "admin">;
+    detail: string;
+    icon: typeof UserRound;
+}> = [
+    {
+        id: "driver",
+        title: "driver",
+        detail: "Share your live GPS location.",
+        icon: Bike,
+    },
+    {
+        id: "owner",
+        title: "owner",
+        detail: "Manage vehicles and view your fleet.",
+        icon: Building2,
+    },
+    {
+        id: "admin",
+        title: "admin",
+        detail: "Review accounts and monitor operations.",
+        icon: ShieldCheck,
+    },
+];
 
-function RoleButton({
-    label,
-    role,
-    onClick,
-}: {
-    label: string;
-    role: Role;
-    onClick: () => void;
-}) {
+export function AuthCard({ text, onAuthenticated }: Props) {
+    const { lang } = useAppSelector((state) => state.ui);
+    const [mode, setMode] = useState<AuthMode>("login");
+    const [role, setRole] = useState<LoginRole | null>(null);
+
+    function selectMode(nextMode: AuthMode) {
+        setMode(nextMode);
+        setRole(null);
+    }
+
     return (
-        <Button
-            onClick={onClick}
-            className={`h-14 w-full rounded-xl font-semibold ${roleStyles[role]}`}
+        <Card
+            id="account"
+            className="w-full overflow-hidden rounded-3xl border-emerald-950/10 bg-white p-0 shadow-xl shadow-slate-950/10"
         >
-            {label}
-        </Button>
-    );
-}
-
-export function AuthCard({
-    text,
-    step,
-    mode,
-    onLogin,
-    onRegister,
-    onBack,
-    onSelectRole,
-    onAuthenticated,
-}: Props) {
-    const [selectedRole, setSelectedRole] = useState<Role | null>(null);
-    const [selectedLoginRole, setSelectedLoginRole] = useState<Role | null>(
-        null,
-    );
-
-    if (mode === "register" && selectedRole) {
-        return (
-            <div className="p-6 sm:p-7">
-                <RegistrationForm
-                    role={selectedRole}
-                    onBack={() => setSelectedRole(null)}
-                />
-            </div>
-        );
-    }
-
-    if (mode === "login" && selectedLoginRole) {
-        return (
-            <div className="p-6 sm:p-7">
-                <LoginForm
-                    role={selectedLoginRole}
-                    onBack={() => setSelectedLoginRole(null)}
-                    onSubmit={onAuthenticated}
-                />
-            </div>
-        );
-    }
-
-    const isRoleStep = step === 2;
-
-    const handleRoleSelect = (role: Role) => {
-        if (mode === "register") {
-            setSelectedRole(role);
-            return;
-        }
-
-        if (mode === "login") {
-            setSelectedLoginRole(role);
-            return;
-        }
-
-        onSelectRole(role);
-    };
-
-    return (
-        <div className="p-6 sm:p-7">
-            <div className="space-y-6 text-center">
-                <h3 className="text-xl font-semibold text-slate-800">
-                    {isRoleStep ? text.chooseRole : text.chooseAction}
-                </h3>
-
-                {!isRoleStep && (
-                    <div className="grid gap-3">
-                        <Button
-                            className="h-12 rounded-xl bg-emerald-700 text-white hover:bg-emerald-800"
-                            onClick={onLogin}
-                        >
-                            {text.login}
-                        </Button>
-
-                        <Button
-                            variant="outline"
-                            className="h-12 rounded-xl"
-                            onClick={onRegister}
-                        >
-                            {text.register}
-                        </Button>
+            <div className="border-b bg-slate-50/80 p-5 sm:p-6">
+                <div className="flex items-center gap-3">
+                    <div className="rounded-2xl bg-emerald-700 p-3 text-white">
+                        <Bike className="size-5" aria-hidden="true" />
                     </div>
-                )}
-
-                {isRoleStep && (
-                    <>
-                        <p className="text-sm text-muted-foreground">
-                            {mode === "login" ? text.login : text.register}
+                    <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
+                            {translate(lang, "Rickshaw System")}
                         </p>
+                        <h2 className="text-xl font-bold tracking-tight text-slate-900">
+                            {translate(lang, "Your work, in one place")}
+                        </h2>
+                    </div>
+                </div>
 
-                        <div className="grid gap-3">
-                            <RoleButton
-                                label={text.driver}
-                                role="driver"
-                                onClick={() => handleRoleSelect("driver")}
-                            />
-
-                            <RoleButton
-                                label={text.owner}
-                                role="owner"
-                                onClick={() => handleRoleSelect("owner")}
-                            />
-
-                            {mode !== "register" && (
-                                <RoleButton
-                                    label={text.admin}
-                                    role="admin"
-                                    onClick={() => handleRoleSelect("admin")}
-                                />
-                            )}
-                        </div>
-
-                        <Button
-                            variant="outline"
-                            className="h-11 w-full rounded-xl"
-                            onClick={onBack}
+                <div className="mt-5 grid grid-cols-2 rounded-xl bg-slate-200/70 p-1">
+                    {(["login", "register"] as const).map((item) => (
+                        <button
+                            key={item}
+                            type="button"
+                            onClick={() => selectMode(item)}
+                            aria-pressed={mode === item}
+                            className={`min-h-10 rounded-lg px-3 text-sm font-semibold transition ${
+                                mode === item
+                                    ? "bg-white text-emerald-800 shadow-sm"
+                                    : "text-slate-600 hover:text-slate-900"
+                            }`}
                         >
+                            {item === "login" ? text.login : text.register}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="p-5 sm:p-6">
+                {role ? (
+                    <div className="space-y-5">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="-ml-2"
+                            onClick={() => setRole(null)}
+                        >
+                            <ArrowLeft className="mr-2 size-4" />
                             {text.back}
                         </Button>
-                    </>
+                        {mode === "login" ? (
+                            <LoginForm
+                                role={role}
+                                onBack={() => setRole(null)}
+                                onSubmit={onAuthenticated}
+                            />
+                        ) : role === "admin" ? (
+                            <p role="alert" className="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
+                                {translate(
+                                    lang,
+                                    "Admin accounts must be created by an authorized administrator.",
+                                )}
+                            </p>
+                        ) : (
+                            <RegistrationForm
+                                role={role}
+                                onBack={() => setRole(null)}
+                            />
+                        )}
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        <div>
+                            <h3 className="font-semibold text-slate-900">
+                                {translate(
+                                    lang,
+                                    mode === "login"
+                                        ? "Choose your account"
+                                        : "Create an account",
+                                )}
+                            </h3>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                                {translate(
+                                    lang,
+                                    mode === "login"
+                                        ? "Select your role to continue."
+                                        : "Choose driver or owner to get started.",
+                                )}
+                            </p>
+                        </div>
+                        <div className="space-y-2">
+                            {roles
+                                .filter(
+                                    (item) =>
+                                        mode === "login" ||
+                                        item.id !== "admin",
+                                )
+                                .map((item) => {
+                                    const Icon = item.icon;
+                                    return (
+                                        <button
+                                            key={item.id}
+                                            type="button"
+                                            onClick={() => setRole(item.id)}
+                                            className="group flex min-h-[68px] w-full items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-left transition hover:border-emerald-300 hover:bg-emerald-50/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
+                                        >
+                                            <span className="rounded-xl bg-slate-100 p-2.5 text-slate-600 transition group-hover:bg-white group-hover:text-emerald-700">
+                                                <Icon className="size-5" aria-hidden="true" />
+                                            </span>
+                                            <span className="min-w-0 flex-1">
+                                                <span className="block font-semibold text-slate-900">
+                                                    {text[item.title]}
+                                                </span>
+                                                <span className="mt-0.5 block text-xs text-muted-foreground">
+                                                    {translate(lang, item.detail)}
+                                                </span>
+                                            </span>
+                                            <span className="text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-emerald-700" aria-hidden="true">
+                                                →
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                        </div>
+                        {mode === "register" && (
+                            <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-900">
+                                {translate(
+                                    lang,
+                                    "New driver and owner accounts need administrator approval before sign-in.",
+                                )}
+                            </p>
+                        )}
+                    </div>
                 )}
             </div>
-        </div>
+        </Card>
     );
 }

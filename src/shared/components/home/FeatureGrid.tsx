@@ -17,15 +17,7 @@ function FeatureCard({
 }) {
   return (
     <Card
-      className="
-        border-white/30
-        bg-white/20
-        backdrop-blur-lg
-        shadow-sm
-        p-5
-        rounded-2xl
-        space-y-3
-      "
+      className="rounded-2xl border-slate-200 bg-white p-5 shadow-sm"
     >
       <div className="text-emerald-700">{icon}</div>
       <h3 className="font-semibold text-neutral-800">{title}</h3>

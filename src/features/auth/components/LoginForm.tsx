@@ -2,6 +2,8 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { useAppSelector } from "@/app/hooks";
+import { translate } from "@/shared/i18n";
 
 export type LoginRole = "driver" | "owner" | "admin";
 export type AuthenticatedRole = LoginRole | "super_admin";
@@ -27,6 +29,7 @@ const roleTitles: Record<LoginRole, string> = {
 };
 
 export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
+    const { lang } = useAppSelector((state) => state.ui);
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -43,7 +46,7 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    email: identifier.trim().toLowerCase(),
+                    identifier: identifier.trim(),
                     password,
                 }),
             });
@@ -86,15 +89,25 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
                 throw new Error("Your account has an unsupported role.");
             }
 
+            if (
+                authenticatedRole !== role &&
+                !(role === "admin" && authenticatedRole === "super_admin")
+            ) {
+                throw new Error("This account does not match the selected role.");
+            }
+
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
             localStorage.setItem("role", authenticatedRole);
             onSubmit?.(authenticatedRole as AuthenticatedRole);
         } catch (error) {
             setMessage(
-                error instanceof Error
-                    ? error.message
-                    : "Could not connect to the server.",
+                translate(
+                    lang,
+                    error instanceof Error
+                        ? error.message
+                        : "Could not connect to the server.",
+                ),
             );
         } finally {
             setLoading(false);
@@ -108,20 +121,21 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
         >
             <div className="space-y-1">
                 <h2 className="text-2xl font-semibold text-slate-800">
-                    {roleTitles[role]}
+                    {translate(lang, roleTitles[role])}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                    Enter your details to access your account.
+                    {translate(lang, "Enter your details to access your account.")}
                 </p>
             </div>
 
             <div className="space-y-2">
-                <label htmlFor="login-identifier">Email</label>
+                <label htmlFor="login-identifier">{translate(lang, "Email or Bangladesh phone")}</label>
                 <Input
                     id="login-identifier"
-                    type="email"
+                    type="text"
+                    inputMode="text"
                     autoComplete="username"
-                    placeholder="Enter your email"
+                    placeholder={translate(lang, "Email or +8801...")}
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                     required
@@ -129,14 +143,14 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
             </div>
 
             <div className="space-y-2">
-                <label htmlFor="login-password">Password</label>
+                <label htmlFor="login-password">{translate(lang, "Password")}</label>
 
                 <div className="relative">
                     <Input
                         id="login-password"
                         type={showPassword ? "text" : "password"}
                         autoComplete="current-password"
-                        placeholder="Enter password"
+                        placeholder={translate(lang, "Enter password")}
                         className="pr-12"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -146,7 +160,10 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
                     <button
                         type="button"
                         aria-label={
-                            showPassword ? "Hide password" : "Show password"
+                            translate(
+                                lang,
+                                showPassword ? "Hide password" : "Show password",
+                            )
                         }
                         aria-pressed={showPassword}
                         onClick={() => setShowPassword((previous) => !previous)}
@@ -166,7 +183,7 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
                 disabled={loading}
                 className={`h-12 w-full text-white ${roleStyles[role]}`}
             >
-                {loading ? "Logging in..." : "Login"}
+                {translate(lang, loading ? "Logging in..." : "Login")}
             </Button>
 
             {message && (
@@ -183,7 +200,7 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
                     onClick={onBack}
                 >
                     <ArrowLeft className="mr-2 size-4" />
-                    Back
+                    {translate(lang, "Back")}
                 </Button>
             )}
         </form>

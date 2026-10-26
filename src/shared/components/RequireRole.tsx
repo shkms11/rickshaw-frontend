@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { getAuthenticatedRole } from "@/shared/authSession";
 
 type Role = "driver" | "owner" | "admin" | "super_admin";
 
@@ -8,11 +9,10 @@ type Props = {
 };
 
 export default function RequireRole({ role, children }: Props) {
-    const savedRole = localStorage.getItem("role") as Role | null;
-    const token = localStorage.getItem("token");
+    const savedRole = getAuthenticatedRole();
     const allowedRoles = Array.isArray(role) ? role : [role];
 
-    if (!savedRole || !token) {
+    if (!savedRole) {
         return <Navigate to="/" replace />;
     }
 
@@ -20,6 +20,5 @@ export default function RequireRole({ role, children }: Props) {
         return <Navigate to="/" replace />;
     }
 
-    // ✅ Allowed
     return <>{children}</>;
 }

@@ -3,11 +3,14 @@ import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useAppSelector } from "@/app/hooks";
+import { translate } from "@/shared/i18n";
 
 export type SearchType =
   | "All"
   | "Drivers"
   | "Owners"
+  | "Rickshaws"
   | "Location"
   | "Complaints";
 
@@ -19,11 +22,13 @@ const filters: SearchType[] = [
   "All",
   "Drivers",
   "Owners",
+  "Rickshaws",
   "Location",
   "Complaints",
 ];
 
 export default function AdminSearchBar({ onSearch }: AdminSearchBarProps) {
+  const { lang } = useAppSelector((state) => state.ui);
   const [query, setQuery] = useState("");
   const [type, setType] = useState<SearchType>("All");
 
@@ -39,10 +44,15 @@ export default function AdminSearchBar({ onSearch }: AdminSearchBarProps) {
     <div className="space-y-4">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold">Global Search</h2>
+        <h2 className="text-lg font-semibold">
+          {translate(lang, "Global Search")}
+        </h2>
 
         <p className="text-sm text-muted-foreground">
-          Search users, drivers, trips, payments and complaints.
+          {translate(
+            lang,
+            "Search people by name or phone, vehicles by plate, and reported locations.",
+          )}
         </p>
       </div>
 
@@ -61,7 +71,7 @@ export default function AdminSearchBar({ onSearch }: AdminSearchBarProps) {
               handleSearch();
             }
           }}
-          placeholder="Search..."
+          placeholder={translate(lang, "Name, phone, plate or place...")}
           aria-label="Search admin data"
           className="h-11 pl-9"
         />
@@ -81,7 +91,7 @@ export default function AdminSearchBar({ onSearch }: AdminSearchBarProps) {
               onClick={() => setType(filter)}
               className={isActive ? "bg-emerald-700 hover:bg-emerald-800" : ""}
             >
-              {filter}
+              {translate(lang, filter)}
             </Button>
           );
         })}

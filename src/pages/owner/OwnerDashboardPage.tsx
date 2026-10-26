@@ -1,115 +1,142 @@
-import DashboardLayout from "../../shared/components/layout/DashboardLayout";
+import { useState, type FormEvent } from "react";
+import { Bike } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import DashboardLayout from "@/shared/components/layout/DashboardLayout";
+import FleetLocationMap from "@/features/tracking/components/FleetLocationMap";
+import {
+    useCreateRickshawMutation,
+    useGetRickshawsQuery,
+} from "@/features/rickshaws/api/rickshawApi";
+import { useAppSelector } from "@/app/hooks";
+import { translate } from "@/shared/i18n";
+import { useGetDriverLocationsQuery } from "@/features/tracking/api/locationApi";
 
 export default function OwnerDashboardPage() {
-  return (
-    <DashboardLayout title="Fleet Owner Dashboard">
-      <div className="space-y-6">
-        {/* KPI HEADER */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <Card className="rounded-2xl border border-white/30 bg-white/20 p-4 backdrop-blur-lg">
-            <div className="text-sm text-neutral-500">Total Fleet</div>
-            <div className="text-2xl font-bold text-neutral-800">42</div>
-            <div className="text-xs text-emerald-600">+3 this month</div>
-          </Card>
+    const { lang } = useAppSelector((state) => state.ui);
+    const { data, isLoading, isError } = useGetRickshawsQuery();
+    const { data: locations } = useGetDriverLocationsQuery(undefined, {
+        pollingInterval: 15000,
+    });
+    const [createRickshaw, { isLoading: isSaving }] = useCreateRickshawMutation();
+    const [plateNo, setPlateNo] = useState("");
+    const [model, setModel] = useState("");
+    const [message, setMessage] = useState("");
+    const fleet = data?.rickshaws ?? [];
 
-          <Card className="rounded-2xl border border-white/30 bg-white/20 p-4 backdrop-blur-lg">
-            <div className="text-sm text-neutral-500">Active Drivers</div>
-            <div className="text-2xl font-bold text-neutral-800">36</div>
-            <div className="text-xs text-emerald-600">85% utilization</div>
-          </Card>
+    async function registerVehicle(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        setMessage("");
+        try {
+            await createRickshaw({
+                plateNo: plateNo.trim().toUpperCase(),
+                ...(model.trim() && { model: model.trim() }),
+            }).unwrap();
+            setPlateNo("");
+            setModel("");
+            setMessage(translate(lang, "Rickshaw registered."));
+        } catch (error) {
+            const responseMessage =
+                typeof error === "object" &&
+                error !== null &&
+                "data" in error &&
+                typeof error.data === "object" &&
+                error.data !== null &&
+                "message" in error.data &&
+                typeof error.data.message === "string"
+                    ? error.data.message
+                    : "Could not register rickshaw. Check your connection and try again.";
+            setMessage(translate(lang, responseMessage));
+        }
+    }
 
-          <Card className="rounded-2xl border border-white/30 bg-white/20 p-4 backdrop-blur-lg">
-            <div className="text-sm text-neutral-500">Daily Revenue</div>
-            <div className="text-2xl font-bold text-neutral-800">৳ 12,450</div>
-            <div className="text-xs text-neutral-500">+8% vs yesterday</div>
-          </Card>
-
-          <Card className="rounded-2xl border border-white/30 bg-white/20 p-4 backdrop-blur-lg">
-            <div className="text-sm text-neutral-500">Pending Payouts</div>
-            <div className="text-2xl font-bold text-amber-600">৳ 3,200</div>
-            <div className="text-xs text-amber-500">2 drivers pending</div>
-          </Card>
-        </div>
-
-        {/* FLEET STATUS */}
-        <Card className="rounded-3xl border border-white/30 bg-white/20 p-6 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
-          <h2 className="text-lg font-semibold text-neutral-800 mb-4">
-            Fleet Status
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30">
-              <div className="text-sm text-neutral-500">On Road</div>
-              <div className="text-2xl font-bold">28</div>
-              <Badge className="mt-2 bg-emerald-700 text-white">Active</Badge>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30">
-              <div className="text-sm text-neutral-500">Idle</div>
-              <div className="text-2xl font-bold">6</div>
-              <Badge variant="outline">Waiting</Badge>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30">
-              <div className="text-sm text-neutral-500">Maintenance</div>
-              <div className="text-2xl font-bold text-red-600">8</div>
-              <Badge variant="destructive">Service Needed</Badge>
-            </div>
-          </div>
-        </Card>
-
-        {/* DRIVER PERFORMANCE */}
-        <Card className="rounded-3xl border border-white/30 bg-white/20 p-6 backdrop-blur-xl">
-          <h2 className="text-lg font-semibold text-neutral-800 mb-4">
-            Top Driver Performance
-          </h2>
-
-          <div className="space-y-3">
-            {["Rahim", "Karim", "Salam"].map((name, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between p-3 rounded-xl bg-white/20 border border-white/30"
-              >
-                <div>
-                  <div className="font-medium text-neutral-800">{name}</div>
-                  <div className="text-sm text-neutral-500">
-                    Trips: {20 - i * 3}
-                  </div>
+    return (
+        <DashboardLayout title="Fleet Owner Dashboard">
+            <div className="space-y-5">
+                <div className="grid gap-4 sm:grid-cols-3">
+                    <Card className="p-5">
+                        <p className="text-sm text-muted-foreground">{translate(lang, "Registered rickshaws")}</p>
+                        <p className="mt-2 text-3xl font-semibold">{isLoading ? "…" : fleet.length}</p>
+                    </Card>
+                    <Card className="p-5">
+                        <p className="text-sm text-muted-foreground">{translate(lang, "Active vehicles")}</p>
+                        <p className="mt-2 text-3xl font-semibold">
+                            {isLoading ? "…" : fleet.filter((item) => item.status === "ACTIVE").length}
+                        </p>
+                    </Card>
+                    <Card className="p-5">
+                        <p className="text-sm text-muted-foreground">{translate(lang, "Drivers sharing GPS")}</p>
+                        <p className="mt-2 text-3xl font-semibold">
+                            {locations?.locations.length ?? "…"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">{translate(lang, "See the live map below")}</p>
+                    </Card>
                 </div>
 
-                <Badge className="bg-emerald-700 text-white">
-                  {95 - i * 5}%
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </Card>
+                <Card className="p-5 sm:p-6">
+                    <div className="mb-4 flex items-center gap-3">
+                        <Bike className="size-5 text-emerald-700" />
+                        <div>
+                            <h2 className="font-semibold">{translate(lang, "Register a rickshaw")}</h2>
+                            <p className="text-sm text-muted-foreground">{translate(lang, "Add a vehicle to your fleet.")}</p>
+                        </div>
+                    </div>
+                    <form onSubmit={(event) => void registerVehicle(event)} className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+                        <Input
+                            value={plateNo}
+                            onChange={(event) => setPlateNo(event.target.value)}
+                            placeholder={translate(lang, "Plate number")}
+                            aria-label={translate(lang, "Plate number")}
+                            required
+                            minLength={2}
+                            maxLength={32}
+                        />
+                        <Input
+                            value={model}
+                            onChange={(event) => setModel(event.target.value)}
+                            placeholder={translate(lang, "Model (optional)")}
+                            aria-label={translate(lang, "Model (optional)")}
+                            maxLength={80}
+                        />
+                        <Button type="submit" disabled={isSaving} className="bg-emerald-700 text-white hover:bg-emerald-800">
+                            {translate(lang, isSaving ? "Saving..." : "Add rickshaw")}
+                        </Button>
+                    </form>
+                    {message && <p role="status" className="mt-3 text-sm">{message}</p>}
+                </Card>
 
-        {/* MAINTENANCE + INSIGHTS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="rounded-3xl border border-white/30 bg-white/20 p-6 backdrop-blur-xl">
-            <h2 className="text-lg font-semibold mb-3">Maintenance Queue</h2>
+                <FleetLocationMap />
 
-            <ul className="space-y-2 text-sm text-neutral-600">
-              <li>• Rickshaw R-102 → Brake issue</li>
-              <li>• Rickshaw R-221 → Battery replacement</li>
-              <li>• Rickshaw R-310 → Tire damage</li>
-            </ul>
-          </Card>
-
-          <Card className="rounded-3xl border border-white/30 bg-white/20 p-6 backdrop-blur-xl">
-            <h2 className="text-lg font-semibold mb-3">Business Insights</h2>
-
-            <ul className="space-y-2 text-sm text-neutral-600">
-              <li>• Peak hours: 6–9 PM</li>
-              <li>• Highest earning zone: Zone B</li>
-              <li>• Demand increased 12% this week</li>
-            </ul>
-          </Card>
-        </div>
-      </div>
-    </DashboardLayout>
-  );
+                <Card className="overflow-hidden">
+                    <div className="border-b p-5">
+                        <h2 className="font-semibold">{translate(lang, "Your fleet")}</h2>
+                    </div>
+                    {isError ? (
+                        <p role="alert" className="p-5 text-sm text-destructive">{translate(lang, "Could not load fleet. Please check your connection and sign-in.")}</p>
+                    ) : isLoading ? (
+                        <p className="p-5 text-sm text-muted-foreground">{translate(lang, "Loading fleet...")}</p>
+                    ) : fleet.length === 0 ? (
+                        <p className="p-5 text-sm text-muted-foreground">{translate(lang, "No vehicles yet. Add your first rickshaw above.")}</p>
+                    ) : (
+                        <div className="divide-y">
+                            {fleet.map((vehicle) => (
+                                <div key={vehicle.id} className="flex flex-wrap items-center justify-between gap-3 p-4">
+                                    <div>
+                                        <p className="font-medium">{vehicle.plateNo}</p>
+                                        <p className="text-sm text-muted-foreground">{vehicle.model ?? translate(lang, "Model not provided")}</p>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-sm text-muted-foreground">{vehicle.driver?.user.name ?? translate(lang, "No driver assigned")}</span>
+                                        <Badge variant={vehicle.status === "ACTIVE" ? "default" : "outline"}>{translate(lang, vehicle.status)}</Badge>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </Card>
+            </div>
+        </DashboardLayout>
+    );
 }

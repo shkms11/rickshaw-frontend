@@ -2,11 +2,13 @@ import { SearchX } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useAppSelector } from "@/app/hooks";
+import { translate } from "@/shared/i18n";
 
 export type SearchResult = {
   id: string;
   name: string;
-  type: "driver" | "owner" | "location" | "complaint";
+  type: "driver" | "owner" | "user" | "rickshaw" | "location" | "payment" | "complaint";
   description?: string;
 };
 
@@ -23,6 +25,8 @@ export default function SearchResults({
   error = false,
   hasSearched = false,
 }: SearchResultsProps) {
+  const { lang } = useAppSelector((state) => state.ui);
+
   if (!hasSearched) {
     return null;
   }
@@ -30,7 +34,7 @@ export default function SearchResults({
   if (isLoading) {
     return (
       <Card className="p-6">
-        <p className="text-sm text-muted-foreground">Searching...</p>
+        <p className="text-sm text-muted-foreground">{translate(lang, "Searching...")}</p>
       </Card>
     );
   }
@@ -39,7 +43,7 @@ export default function SearchResults({
     return (
       <Card className="p-6">
         <p className="text-sm text-destructive">
-          Something went wrong while searching.
+          {translate(lang, "Something went wrong while searching.")}
         </p>
       </Card>
     );
@@ -50,10 +54,10 @@ export default function SearchResults({
       <Card className="flex flex-col items-center justify-center gap-2 p-8 text-center">
         <SearchX className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
 
-        <p className="font-medium">No results found</p>
+        <p className="font-medium">{translate(lang, "No results found")}</p>
 
         <p className="text-sm text-muted-foreground">
-          Try a different search term or filter.
+          {translate(lang, "Try a different search term or filter.")}
         </p>
       </Card>
     );
@@ -77,7 +81,7 @@ export default function SearchResults({
           </div>
 
           <Badge variant="outline" className="shrink-0 capitalize">
-            {result.type}
+            {translate(lang, result.type)}
           </Badge>
         </div>
       ))}

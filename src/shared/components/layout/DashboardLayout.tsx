@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { useAppSelector } from "@/app/hooks";
+import { translate } from "@/shared/i18n";
 
 type Props = {
   title: string;
@@ -7,6 +9,8 @@ type Props = {
 };
 
 export default function DashboardLayout({ title, children }: Props) {
+  const { lang } = useAppSelector((state) => state.ui);
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
@@ -20,7 +24,7 @@ export default function DashboardLayout({ title, children }: Props) {
             {title && (
               <div className="mb-6 border-b pb-4">
                 <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
-                  {title}
+                  {translate(lang, title)}
                 </h1>
               </div>
             )}

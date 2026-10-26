@@ -8,8 +8,13 @@ type UIState = {
 };
 
 const initialState: UIState = {
-  lang: "en",
-  largeText: false,
+  lang:
+    typeof window !== "undefined" && window.localStorage.getItem("lang") === "bn"
+      ? "bn"
+      : "en",
+  largeText:
+    typeof window !== "undefined" &&
+    window.localStorage.getItem("largeText") === "true",
 };
 
 const uiSlice = createSlice({
