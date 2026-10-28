@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft } from "lucide-react";
 import { useAppSelector } from "@/app/hooks";
 import { translate } from "@/shared/i18n";
+import { apiBaseUrl } from "@/shared/api/apiBaseUrl";
 
 export type Role = "driver" | "owner" | "admin";
 
@@ -11,8 +12,6 @@ type RegistrationFormProps = {
   role: Role;
   onBack?: () => void;
 };
-
-const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api";
 
 export default function RegistrationForm({
   role,

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useAppSelector } from "@/app/hooks";
 import { translate } from "@/shared/i18n";
+import { apiBaseUrl } from "@/shared/api/apiBaseUrl";
 
 export type LoginRole = "driver" | "owner" | "admin";
 export type AuthenticatedRole = LoginRole | "super_admin";
@@ -13,8 +14,6 @@ type LoginFormProps = {
     onBack?: () => void;
     onSubmit?: (role: AuthenticatedRole) => void;
 };
-
-const apiBaseUrl = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api";
 
 const roleStyles: Record<LoginRole, string> = {
     driver: "bg-emerald-700 hover:bg-emerald-800",
