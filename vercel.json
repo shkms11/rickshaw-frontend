@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://rickshaw-backend-7s9rlzvr2-shkms11.vercel.app/api/:path*"
+    }
+  ]
+}

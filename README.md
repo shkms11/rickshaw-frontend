@@ -12,13 +12,12 @@ React, TypeScript, and Vite client for the Rickshaw Traffic Management System.
    npm run dev
    ```
 
-3. Open the Vite URL shown in the terminal. To use another API URL, set
-   `VITE_API_URL` (for example, `http://localhost:5000/api`) in a local `.env`.
-   The frontend defaults to the local API when this variable is omitted.
+3. Open the Vite URL shown in the terminal. Requests to `/api` are proxied to
+   `http://localhost:5000`; start the backend first.
 
-Vercel builds use `VITE_API_URL` from the Vercel project environment when set;
-otherwise `.env.production` points to the production backend. Set it to the
-backend URL ending in `/api` and redeploy after changing it.
+Production builds also use the same-origin `/api` path. `vercel.json` forwards
+those requests to the production backend, avoiding browser CORS. Deploy the
+frontend and backend projects for the rewrite to take effect.
 
 Public driver and owner registrations require administrator approval before
 login. The header language control switches between English and Bangla, and
