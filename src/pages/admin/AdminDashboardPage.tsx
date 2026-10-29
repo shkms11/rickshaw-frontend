@@ -12,6 +12,10 @@ import {
 } from "@/api/adminApi";
 import { useAppSelector } from "@/app/hooks";
 import { translate } from "@/shared/i18n";
+import NoticeBoard from "@/shared/components/dashboard/NoticeBoard";
+import AdminFleetActions from "@/features/admin/components/AdminFleetActions";
+import AdminFleetControls from "@/features/admin/components/AdminFleetControls";
+import AdminComplaintInbox from "@/features/admin/components/AdminComplaintInbox";
 
 export default function AdminDashboardPage() {
     const [searchAdmin, { data, isFetching, error }] = useLazySearchAdminQuery();
@@ -35,6 +39,7 @@ export default function AdminDashboardPage() {
             }
         >
             <div className="space-y-5">
+                <NoticeBoard audience="admin" />
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                     {(
                         [
@@ -58,6 +63,9 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <AdminApprovals />
+                <AdminFleetActions />
+                <AdminFleetControls />
+                <AdminComplaintInbox />
                 <Card className="space-y-4 p-5 sm:p-6">
                     <AdminSearchBar onSearch={handleSearch} />
                     <SearchResults

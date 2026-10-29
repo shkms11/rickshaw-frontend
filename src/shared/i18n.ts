@@ -121,6 +121,187 @@ const bengali: Record<string, string> = {
         "এখনো কোনো যান নেই। উপরে প্রথম রিকশাটি যোগ করুন।",
     "Model not provided": "মডেল দেওয়া হয়নি",
     "No driver assigned": "কোনো চালক বরাদ্দ নেই",
+    "Notice board": "নোটিশ বোর্ড",
+    "Turn on GPS sharing while working so your assigned vehicle can be tracked.":
+        "কাজের সময় জিপিএস চালু রাখুন, যাতে বরাদ্দকৃত যানটি ট্র্যাক করা যায়।",
+    "Use the lost-rickshaw alert immediately if your assigned vehicle is missing.":
+        "বরাদ্দকৃত যানটি হারিয়ে গেলে সঙ্গে সঙ্গে হারানো রিকশার সতর্কতা পাঠান।",
+    "Send account or vehicle problems to the admin team from this dashboard.":
+        "এই ড্যাশবোর্ড থেকে অ্যাকাউন্ট বা যানবাহনের সমস্যা অ্যাডমিনকে জানান।",
+    "Search approved drivers by phone number before assigning a vehicle.":
+        "যান বরাদ্দের আগে ফোন নম্বর দিয়ে অনুমোদিত চালক খুঁজুন।",
+    "A vehicle removal request takes effect only after admin approval.":
+        "অ্যাডমিন অনুমোদনের পরেই যান সরানোর অনুরোধ কার্যকর হবে।",
+    "Lost-rickshaw alerts and admin decisions appear in your fleet.":
+        "হারানো রিকশার সতর্কতা ও অ্যাডমিনের সিদ্ধান্ত আপনার বহরে দেখা যাবে।",
+    "Review vehicle removal requests and lost-rickshaw alerts promptly.":
+        "যান সরানোর অনুরোধ ও হারানো রিকশার সতর্কতা দ্রুত পর্যালোচনা করুন।",
+    "Use fleet controls to update vehicle and driver statuses.":
+        "বহর নিয়ন্ত্রণ থেকে যান ও চালকের অবস্থা হালনাগাদ করুন।",
+    "Registration approvals and user reports are available below.":
+        "নিবন্ধন অনুমোদন ও ব্যবহারকারীর রিপোর্ট নিচে পাওয়া যাবে।",
+    "Search approved driver by phone": "ফোন নম্বর দিয়ে অনুমোদিত চালক খুঁজুন",
+    "Find driver": "চালক খুঁজুন",
+    "No approved driver found for this phone.": "এই নম্বরে কোনো অনুমোদিত চালক পাওয়া যায়নি।",
+    "Assign driver": "চালক বরাদ্দ করুন",
+    "Unassign driver": "চালককে অব্যাহতি দিন",
+    "Already assigned to": "ইতোমধ্যে বরাদ্দ",
+    "Phone unavailable": "ফোন নম্বর নেই",
+    "Search approved drivers by phone, check GPS, and request admin help for fleet changes.":
+        "ফোনে অনুমোদিত চালক খুঁজুন, জিপিএস দেখুন, এবং বহরের পরিবর্তনে অ্যাডমিনের সহায়তা চান।",
+    "Request removal": "সরানোর অনুরোধ",
+    "Awaiting admin approval": "অ্যাডমিন অনুমোদনের অপেক্ষায়",
+    "Sending request...": "অনুরোধ পাঠানো হচ্ছে...",
+    "Ask admin to remove": "অ্যাডমিনকে সরানোর অনুরোধ জানান",
+    "Removal request sent. Admin approval is required.":
+        "সরানোর অনুরোধ পাঠানো হয়েছে। অ্যাডমিনের অনুমোদন প্রয়োজন।",
+    "Removal request is waiting for admin approval.":
+        "সরানোর অনুরোধ অ্যাডমিন অনুমোদনের অপেক্ষায় আছে।",
+    "Admin rejected the vehicle removal request.":
+        "অ্যাডমিন যান সরানোর অনুরোধ প্রত্যাখ্যান করেছেন।",
+    "Admin approved the vehicle removal request.":
+        "অ্যাডমিন যান সরানোর অনুরোধ অনুমোদন করেছেন।",
+    "Lost-rickshaw alert sent by": "রিকশা হারানোর সতর্কতা পাঠিয়েছেন",
+    "Report rickshaw lost": "রিকশা হারানোর রিপোর্ট দিন",
+    "Lost-rickshaw alert is open": "হারানো রিকশার সতর্কতা খোলা আছে",
+    "Sending alert...": "সতর্কতা পাঠানো হচ্ছে...",
+    "Warn the owner and admin that": "মালিক ও অ্যাডমিনকে জানান যে",
+    "is lost?": "হারিয়ে গেছে কি?",
+    "Lost-rickshaw alert sent to the owner and admin.":
+        "মালিক ও অ্যাডমিনের কাছে হারানো রিকশার সতর্কতা পাঠানো হয়েছে।",
+    "Could not send alert. Please contact the admin team.":
+        "সতর্কতা পাঠানো যায়নি। অ্যাডমিন টিমের সঙ্গে যোগাযোগ করুন।",
+    "Assigned rickshaw": "বরাদ্দকৃত রিকশা",
+    "Could not load assigned vehicle details.": "বরাদ্দকৃত যানের তথ্য লোড করা যায়নি।",
+    "Loading assigned vehicle...": "বরাদ্দকৃত যানের তথ্য লোড হচ্ছে...",
+    "No rickshaw is assigned to your account. Contact your fleet owner.":
+        "আপনার অ্যাকাউন্টে কোনো রিকশা বরাদ্দ নেই। ফ্লিট মালিকের সঙ্গে যোগাযোগ করুন।",
+    Owner: "মালিক",
+    "GPS is live": "জিপিএস লাইভ",
+    "GPS is not sharing": "জিপিএস শেয়ার হচ্ছে না",
+    "The owner and admin have been alerted.": "মালিক ও অ্যাডমিনকে সতর্ক করা হয়েছে।",
+    "Could not load alert status.": "সতর্কতার অবস্থা লোড করা যায়নি।",
+    "Report a problem": "সমস্যা রিপোর্ট করুন",
+    "Send a vehicle, account, or safety issue to the admin team.":
+        "যানবাহন, অ্যাকাউন্ট বা নিরাপত্তার সমস্যা অ্যাডমিন টিমকে জানান।",
+    "Fleet alerts and requests": "বহরের সতর্কতা ও অনুরোধ",
+    "Review lost-vehicle alerts and owner removal requests.":
+        "হারানো যানবাহনের সতর্কতা ও মালিকের সরানোর অনুরোধ পর্যালোচনা করুন।",
+    "Loading fleet alerts...": "বহরের সতর্কতা লোড হচ্ছে...",
+    "No fleet alerts or requests need review.": "পর্যালোচনার জন্য কোনো বহর সতর্কতা বা অনুরোধ নেই।",
+    "Lost vehicle alert": "হারানো যানবাহনের সতর্কতা",
+    "Vehicle removal request": "যান সরানোর অনুরোধ",
+    "Reported by": "রিপোর্ট করেছেন",
+    "Mark resolved": "সমাধান হয়েছে চিহ্নিত করুন",
+    "Approve removal": "সরানো অনুমোদন করুন",
+    "Could not update fleet action.": "বহরের কার্যক্রম হালনাগাদ করা যায়নি।",
+    "Admin fleet controls": "অ্যাডমিন বহর নিয়ন্ত্রণ",
+    "Update vehicle service status and driver availability.":
+        "যানের পরিষেবা অবস্থা ও চালকের উপস্থিতি হালনাগাদ করুন।",
+    "Loading fleet controls...": "বহর নিয়ন্ত্রণ লোড হচ্ছে...",
+    "Could not load fleet controls.": "বহর নিয়ন্ত্রণ লোড করা যায়নি।",
+    Vehicles: "যানবাহন",
+    Drivers: "চালক",
+    "Driver status": "চালকের অবস্থা",
+    "Vehicle status updated.": "যানের অবস্থা হালনাগাদ হয়েছে।",
+    "Could not update vehicle status.": "যানের অবস্থা হালনাগাদ করা যায়নি।",
+    "Driver status updated.": "চালকের অবস্থা হালনাগাদ হয়েছে।",
+    "Could not update driver status.": "চালকের অবস্থা হালনাগাদ করা যায়নি।",
+    "No vehicles registered.": "কোনো যান নিবন্ধিত নেই।",
+    "No drivers registered.": "কোনো চালক নিবন্ধিত নেই।",
+    "Owner and driver reports": "মালিক ও চালকের রিপোর্ট",
+    "Review reports and mark issues resolved when handled.":
+        "রিপোর্ট পর্যালোচনা করে সমাধান হলে চিহ্নিত করুন।",
+    "Loading reports...": "রিপোর্ট লোড হচ্ছে...",
+    "Could not load reports.": "রিপোর্ট লোড করা যায়নি।",
+    "No reports have been submitted.": "কোনো রিপোর্ট জমা পড়েনি।",
+    Reopen: "আবার খুলুন",
+    OPEN: "খোলা",
+    RESOLVED: "সমাধান হয়েছে",
+    ONLINE: "অনলাইন",
+    OFFLINE: "অফলাইন",
+    ON_TRIP: "ট্রিপে",
+    "Could not update report status.": "রিপোর্টের অবস্থা হালনাগাদ করা যায়নি।",
+    "Could not change vehicle status while it has an active trip":
+        "ট্রিপ চলাকালে যানের অবস্থা পরিবর্তন করা যাবে না",
+    "Cannot change vehicle status while it has an active trip":
+        "ট্রিপ চলাকালে যানের অবস্থা পরিবর্তন করা যাবে না",
+    "Driver must share GPS before being marked online":
+        "অনলাইনে চিহ্নিত হওয়ার আগে চালককে জিপিএস শেয়ার করতে হবে",
+    "Could not update rickshaw status": "রিকশার অবস্থা হালনাগাদ করা যায়নি",
+    "Could not update rickshaw driver": "রিকশার চালক হালনাগাদ করা যায়নি",
+    "Only active rickshaws can be assigned a driver":
+        "শুধু সক্রিয় রিকশায় চালক বরাদ্দ করা যাবে",
+    "Cannot request removal while the rickshaw has an active trip":
+        "ট্রিপ চলাকালে রিকশা সরানোর অনুরোধ করা যাবে না",
+    "A removal request is already awaiting admin approval":
+        "একটি সরানোর অনুরোধ ইতিমধ্যে অ্যাডমিন অনুমোদনের অপেক্ষায় আছে",
+    "An open lost-rickshaw alert already exists":
+        "হারানো রিকশার একটি সতর্কতা ইতিমধ্যে খোলা আছে",
+    "Lost-rickshaw alerts must be resolved": "হারানো রিকশার সতর্কতা সমাধান করতে হবে",
+    "Removal requests must be approved or rejected":
+        "সরানোর অনুরোধ অনুমোদন বা প্রত্যাখ্যান করতে হবে",
+    "Fleet action has already been reviewed": "বহরের কার্যক্রম ইতিমধ্যে পর্যালোচনা করা হয়েছে",
+    "Cannot approve removal while the rickshaw has an active trip":
+        "ট্রিপ চলাকালে রিকশা সরানো অনুমোদন করা যাবে না",
+    "Choose an allowed review status": "সঠিক পর্যালোচনা অবস্থা নির্বাচন করুন",
+    "A valid rickshaw is required": "সঠিক রিকশা নির্বাচন করুন",
+    "Assigned rickshaw not found": "বরাদ্দকৃত রিকশা পাওয়া যায়নি",
+    "Only an owner or assigned driver can report a lost rickshaw":
+        "শুধু মালিক বা বরাদ্দকৃত চালক রিকশা হারানোর রিপোর্ট দিতে পারেন",
+    "Enter a valid Bangladesh mobile number": "সঠিক বাংলাদেশি মোবাইল নম্বর দিন",
+    "Report sent to admin.": "অ্যাডমিনের কাছে রিপোর্ট পাঠানো হয়েছে।",
+    "Could not load fleet alerts and requests.": "বহরের সতর্কতা ও অনুরোধ লোড করা যায়নি।",
+    "Assigned driver": "বরাদ্দকৃত চালক",
+    "Assign approved drivers, check GPS status, or remove vehicles from active service.":
+        "অনুমোদিত চালক বরাদ্দ করুন, জিপিএস অবস্থা দেখুন, অথবা সক্রিয় বহর থেকে যান সরান।",
+    "Driver assignment updated.": "চালক বরাদ্দ হালনাগাদ হয়েছে।",
+    "Saving assignment...": "বরাদ্দ সংরক্ষণ হচ্ছে...",
+    "Loading approved drivers...": "অনুমোদিত চালকদের তথ্য লোড হচ্ছে...",
+    "Could not load approved drivers.": "অনুমোদিত চালকদের তথ্য লোড করা যায়নি।",
+    "No approved available drivers.": "কোনো অনুমোদিত ও উপলভ্য চালক নেই।",
+    "Could not load vehicle tracking status.": "যানের ট্র্যাকিং অবস্থা লোড করা যায়নি।",
+    "Live location": "লাইভ অবস্থান",
+    "No driver location reported": "চালকের কোনো অবস্থান পাওয়া যায়নি",
+    Remove: "সরান",
+    "Removing...": "সরানো হচ্ছে...",
+    Restore: "পুনরুদ্ধার",
+    "Restoring...": "পুনরুদ্ধার হচ্ছে...",
+    "from your active fleet? It will be deactivated, not deleted.":
+        "আপনার সক্রিয় বহর থেকে সরাবেন? এটি নিষ্ক্রিয় হবে, মুছে যাবে না।",
+    "Rickshaw removed from active fleet.": "রিকশাটি সক্রিয় বহর থেকে সরানো হয়েছে।",
+    "Rickshaw restored to active fleet.": "রিকশাটি সক্রিয় বহরে ফিরিয়ে আনা হয়েছে।",
+    "Could not update the fleet. Check your connection and try again.":
+        "বহর হালনাগাদ করা যায়নি। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।",
+    "Cannot change the driver while the rickshaw has an active trip":
+        "রিকশার ট্রিপ চলাকালে চালক পরিবর্তন করা যাবে না",
+    "Cannot remove a rickshaw while it has an active trip":
+        "ট্রিপ চলাকালে রিকশা সরানো যাবে না",
+    "Approved driver not found": "অনুমোদিত চালক পাওয়া যায়নি",
+    "Unassign this driver from their current rickshaw first":
+        "এই চালককে বর্তমান রিকশা থেকে আগে অব্যাহতি দিন",
+    "This driver is assigned to another owner's rickshaw":
+        "এই চালক অন্য মালিকের রিকশায় বরাদ্দ আছেন",
+    "This driver is already assigned to another rickshaw":
+        "এই চালক অন্য একটি রিকশায় বরাদ্দ আছেন",
+    "Report a fleet problem": "বহরের সমস্যা রিপোর্ট করুন",
+    "Send an issue about your fleet to the admin team.":
+        "আপনার বহরের সমস্যা অ্যাডমিন টিমকে জানান।",
+    Subject: "বিষয়",
+    "Describe the problem": "সমস্যার বিবরণ দিন",
+    "Sending...": "পাঠানো হচ্ছে...",
+    "Send report": "রিপোর্ট পাঠান",
+    "Could not submit the report. Check your connection and try again.":
+        "রিপোর্ট পাঠানো যায়নি। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।",
+    "Enter a subject and a description of at least 10 characters":
+        "বিষয় লিখুন এবং অন্তত ১০ অক্ষরে সমস্যার বিবরণ দিন",
+    "Could not submit the report": "রিপোর্ট জমা দেওয়া যায়নি",
+    "Could not load available drivers": "উপলভ্য চালকদের তথ্য লোড করা যায়নি",
+    "Choose a valid driver or leave the vehicle unassigned":
+        "সঠিক চালক নির্বাচন করুন অথবা যানটি চালকবিহীন রাখুন",
+    "Could not update driver assignment": "চালক বরাদ্দ হালনাগাদ করা যায়নি",
+    "Could not remove rickshaw from fleet": "বহর থেকে রিকশা সরানো যায়নি",
+    "Could not restore rickshaw to fleet": "বহরে রিকশা ফিরিয়ে আনা যায়নি",
     "ACTIVE": "সক্রিয়",
     "INACTIVE": "নিষ্ক্রিয়",
     "MAINTENANCE": "মেরামত চলছে",

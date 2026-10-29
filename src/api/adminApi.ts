@@ -63,6 +63,21 @@ export type UpdateApprovalParams = {
     status: "APPROVED" | "REJECTED";
 };
 
+export type AdminDriver = {
+    id: string;
+    status: "ONLINE" | "OFFLINE" | "ON_TRIP";
+    licenseNo: string;
+    user: {
+        id: string;
+        name: string;
+        email: string | null;
+        phone: string | null;
+        role: string;
+        approvalStatus: "PENDING" | "APPROVED" | "REJECTED";
+    };
+    rickshaw: { id: string; plateNo: string } | null;
+};
+
 export const adminApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getAdminDashboardSummary: builder.query<AdminDashboardSummary, void>({
@@ -95,6 +110,21 @@ export const adminApi = api.injectEndpoints({
                 },
             }),
         }),
+        getAdminDrivers: builder.query<AdminDriver[], void>({
+            query: () => "/drivers",
+            providesTags: ["Driver"],
+        }),
+        updateAdminDriverStatus: builder.mutation<
+            { message: string },
+            { driverId: string; status: AdminDriver["status"] }
+        >({
+            query: ({ driverId, status }) => ({
+                url: `/drivers/${encodeURIComponent(driverId)}/status`,
+                method: "PATCH",
+                body: { status },
+            }),
+            invalidatesTags: ["Driver", "Rickshaw", "DriverLocation"],
+        }),
     }),
 });
 
@@ -103,4 +133,6 @@ export const {
     useGetAdminApprovalsQuery,
     useUpdateAdminApprovalMutation,
     useLazySearchAdminQuery,
+    useGetAdminDriversQuery,
+    useUpdateAdminDriverStatusMutation,
 } = adminApi;
