@@ -56,34 +56,38 @@ export function AuthCard({ text, onAuthenticated }: Props) {
     return (
         <Card
             id="account"
-            className="w-full overflow-hidden rounded-3xl border-emerald-950/10 bg-white p-0 shadow-xl shadow-slate-950/10"
+            className="w-full overflow-hidden rounded-3xl border-slate-200/80 bg-white p-0 shadow-xl shadow-slate-950/[0.08] ring-1 ring-white/80"
         >
-            <div className="border-b bg-slate-50/80 p-5 sm:p-6">
+            <div className="border-b border-slate-200/80 bg-gradient-to-br from-emerald-50/80 via-white to-slate-50 p-5 sm:p-6">
                 <div className="flex items-center gap-3">
-                    <div className="rounded-2xl bg-emerald-700 p-3 text-white">
+                    <div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-emerald-700 text-white shadow-md shadow-emerald-900/15">
                         <Bike className="size-5" aria-hidden="true" />
                     </div>
                     <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
                             {translate(lang, "Rickshaw System")}
                         </p>
-                        <h2 className="text-xl font-bold tracking-tight text-slate-900">
+                        <h2 className="text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">
                             {translate(lang, "Your work, in one place")}
                         </h2>
                     </div>
                 </div>
 
-                <div className="mt-5 grid grid-cols-2 rounded-xl bg-slate-200/70 p-1">
+                <div
+                    className="mt-5 grid grid-cols-2 rounded-xl border border-slate-200 bg-slate-100 p-1"
+                    role="group"
+                    aria-label={text.chooseAction}
+                >
                     {(["login", "register"] as const).map((item) => (
                         <button
                             key={item}
                             type="button"
                             onClick={() => selectMode(item)}
                             aria-pressed={mode === item}
-                            className={`min-h-10 rounded-lg px-3 text-sm font-semibold transition ${
+                            className={`min-h-11 rounded-lg px-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2 ${
                                 mode === item
-                                    ? "bg-white text-emerald-800 shadow-sm"
-                                    : "text-slate-600 hover:text-slate-900"
+                                    ? "bg-white text-emerald-900 shadow-sm"
+                                    : "text-slate-600 hover:bg-white/60 hover:text-slate-900"
                             }`}
                         >
                             {item === "login" ? text.login : text.register}
@@ -92,7 +96,10 @@ export function AuthCard({ text, onAuthenticated }: Props) {
                 </div>
             </div>
 
-            <div className="p-5 sm:p-6">
+            <div
+                id="account-panel"
+                className="p-5 sm:p-6"
+            >
                 {role ? (
                     <div className="space-y-5">
                         <Button
@@ -159,16 +166,16 @@ export function AuthCard({ text, onAuthenticated }: Props) {
                                             key={item.id}
                                             type="button"
                                             onClick={() => setRole(item.id)}
-                                            className="group flex min-h-[68px] w-full items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-left transition hover:border-emerald-300 hover:bg-emerald-50/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
+                                            className="group flex min-h-[72px] w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-left transition hover:border-emerald-300 hover:bg-emerald-50/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
                                         >
-                                            <span className="rounded-xl bg-slate-100 p-2.5 text-slate-600 transition group-hover:bg-white group-hover:text-emerald-700">
+                                            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-600 transition group-hover:bg-white group-hover:text-emerald-700">
                                                 <Icon className="size-5" aria-hidden="true" />
                                             </span>
                                             <span className="min-w-0 flex-1">
                                                 <span className="block font-semibold text-slate-900">
                                                     {text[item.title]}
                                                 </span>
-                                                <span className="mt-0.5 block text-xs text-muted-foreground">
+                                                <span className="mt-1 block text-sm leading-5 text-slate-500">
                                                     {translate(lang, item.detail)}
                                                 </span>
                                             </span>

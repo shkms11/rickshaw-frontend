@@ -21,6 +21,28 @@ export const HOME_TEXT: Record<Lang, TextPack> = {
     infoTitle: "About this system",
     infoDesc:
       "A clear, role-based workspace for drivers, fleet owners, and administrators in Bangladesh.",
+    featuresEyebrow: "Made for everyday operations",
+    storyEyebrow: "The story behind the wheels",
+    storyTitle: "A city moves forward with its people",
+    storyLead:
+      "In Dhaka, rickshaws are part of everyday journeys—and a living tradition carried through the city by drivers, makers, and artists.",
+    storyParagraph1:
+      "UNESCO inscribed “Rickshaws and rickshaw painting in Dhaka” on its Representative List of the Intangible Cultural Heritage of Humanity in 2023. The tradition includes the artists and craftspeople whose work gives these vehicles their distinctive character.",
+    storyParagraph2:
+      "We believe progress should support the people who keep the city moving. Better records, thoughtful planning, safer streets, and practical tools can help owners manage their fleets while treating drivers with dignity—not blaming them for the challenges of urban transport.",
+    storyReadMore: "Read the story",
+    storyReadLess: "Show less",
+    storyQuote: "A better city moves forward with its people.",
+    storyQuoteDesc:
+      "Practical fleet tools can support everyday operations while keeping people—not just vehicles—at the heart of mobility.",
+    storySourceHeading: "Explore the sources",
+    storyUnescoLabel: "UNESCO · Dhaka’s rickshaw art and tradition",
+    storyUnescoContext:
+      "The official 2023 cultural heritage inscription",
+    storyWorldBankLabel: "World Bank · Transport and opportunity",
+    storyWorldBankContext:
+      "A broader overview of how transport connects people to jobs and services",
+    storyBadge: "UNESCO heritage · 2023",
     feature1Title: "Live GPS sharing",
     feature1Desc: "Drivers choose when to share device location with their fleet.",
     feature2Title: "Fleet visibility",
@@ -57,6 +79,28 @@ export const HOME_TEXT: Record<Lang, TextPack> = {
     infoTitle: "এই সিস্টেম সম্পর্কে",
     infoDesc:
       "বাংলাদেশের চালক, ফ্লিট মালিক ও অ্যাডমিনদের জন্য পরিষ্কার, ভূমিকা-ভিত্তিক একটি ব্যবস্থাপনা প্ল্যাটফর্ম।",
+    featuresEyebrow: "প্রতিদিনের কাজের জন্য তৈরি",
+    storyEyebrow: "এই উদ্যোগের পেছনের গল্প",
+    storyTitle: "মানুষকে সঙ্গে নিয়েই এগিয়ে যায় শহর",
+    storyLead:
+      "ঢাকায় রিকশা প্রতিদিনের যাতায়াতের অংশ—চালক, নির্মাতা ও শিল্পীদের হাত ধরে বেঁচে থাকা এক নগর ঐতিহ্য।",
+    storyParagraph1:
+      "২০২৩ সালে ইউনেস্কো “ঢাকার রিকশা ও রিকশাচিত্র”-কে মানবতার অমূর্ত সাংস্কৃতিক ঐতিহ্যের প্রতিনিধিত্বমূলক তালিকায় অন্তর্ভুক্ত করে। এই ঐতিহ্যের সঙ্গে যুক্ত আছেন সেই শিল্পী ও কারিগরেরা, যাঁদের কাজ রিকশাকে দিয়েছে আলাদা পরিচয়।",
+    storyParagraph2:
+      "আমরা মনে করি, উন্নয়ন হওয়া উচিত শহরকে সচল রাখা মানুষদের পাশে নিয়ে। উন্নত নথি, ভেবেচিন্তে পরিকল্পনা, নিরাপদ সড়ক এবং ব্যবহারিক প্রযুক্তি মালিকদের ফ্লিট পরিচালনায় সহায়তা করতে পারে—চালকদের দোষারোপ না করে তাঁদের মর্যাদা বজায় রেখেই।",
+    storyReadMore: "গল্পটি পড়ুন",
+    storyReadLess: "সংক্ষিপ্ত করুন",
+    storyQuote: "মানুষকে সঙ্গে নিয়েই এগিয়ে যায় একটি ভালো শহর।",
+    storyQuoteDesc:
+      "ব্যবহারিক ফ্লিট ব্যবস্থাপনার সরঞ্জাম দৈনন্দিন কাজকে সহায়তা করতে পারে, যেখানে চলাচলের কেন্দ্রে থাকবে মানুষ—শুধু যানবাহন নয়।",
+    storySourceHeading: "তথ্যসূত্র দেখুন",
+    storyUnescoLabel: "ইউনেস্কো · ঢাকার রিকশাচিত্র ও ঐতিহ্য",
+    storyUnescoContext:
+      "২০২৩ সালের সাংস্কৃতিক ঐতিহ্যের আনুষ্ঠানিক স্বীকৃতি",
+    storyWorldBankLabel: "বিশ্বব্যাংক · পরিবহন ও সুযোগ",
+    storyWorldBankContext:
+      "মানুষকে কাজ ও সেবার সঙ্গে যুক্ত করতে পরিবহনের ভূমিকা নিয়ে বিস্তৃত আলোচনা",
+    storyBadge: "ইউনেস্কো ঐতিহ্য · ২০২৩",
     feature1Title: "লাইভ জিপিএস শেয়ার",
     feature1Desc: "চালকরা নিজেরা ঠিক করবেন কখন ফ্লিটের সঙ্গে অবস্থান শেয়ার করবেন।",
     feature2Title: "ফ্লিটের অবস্থান",

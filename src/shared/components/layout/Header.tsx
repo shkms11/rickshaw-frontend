@@ -81,16 +81,24 @@ export function Header({ title }: Props) {
     };
 
     // Adjust button size for accessibility.
-    const buttonSize = largeText ? "h-12 px-4 text-lg" : "h-10 px-3 text-sm";
+    const buttonSize = largeText ? "h-12 px-4 text-lg" : "h-11 px-3 text-sm";
+    const textSizeLabel =
+        lang === "bn"
+            ? largeText
+                ? "স্বাভাবিক লেখার আকার"
+                : "বড় লেখা"
+            : largeText
+              ? "Standard text size"
+              : "Larger text";
 
     return (
         <header
             // Keep header sticky and animate hide/show.
-            className={`sticky top-0 z-50 bg-slate-50/95 px-3 pt-3 backdrop-blur-sm transition-transform duration-300 sm:px-4 sm:pt-4 ${
+            className={`sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 px-3 backdrop-blur-md transition-transform duration-300 sm:px-6 ${
                 hidden ? "-translate-y-full" : "translate-y-0"
             }`}
         >
-            <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 rounded-2xl border bg-white px-3 py-3 shadow-sm sm:px-5">
+            <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-1 py-2.5 sm:px-0 sm:py-3">
                 {/* Home button, logo, and current page title. */}
                 <div className="flex min-w-0 items-center gap-3">
                     <Button
@@ -98,7 +106,7 @@ export function Header({ title }: Props) {
                         size="icon"
                         onClick={handleHome}
                         aria-label={translate(lang, "Home")}
-                        className="shrink-0"
+                        className="size-11 shrink-0"
                     >
                         <Home className="h-5 w-5" />
                     </Button>
@@ -140,8 +148,10 @@ export function Header({ title }: Props) {
                     <Button
                         type="button"
                         variant="outline"
-                        className={buttonSize}
+                        className={`${buttonSize} ${largeText ? "border-emerald-700 bg-emerald-50 text-emerald-900 hover:bg-emerald-100" : ""}`}
                         aria-label={lang === "bn" ? "বড় লেখা চালু বা বন্ধ করুন" : "Toggle larger text"}
+                        aria-pressed={largeText}
+                        title={textSizeLabel}
                         onClick={() => {
                             window.localStorage.setItem(
                                 "largeText",
@@ -150,8 +160,8 @@ export function Header({ title }: Props) {
                             dispatch(toggleLargeText());
                         }}
                     >
-                        <TextCursorInput className="mr-2 h-4 w-4" />
-                        A+
+                        <TextCursorInput className="h-4 w-4 sm:mr-2" />
+                        <span aria-hidden="true">A+</span>
                     </Button>
 
                     {/* Display logout only on relevant routes. */}

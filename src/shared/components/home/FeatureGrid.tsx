@@ -17,11 +17,13 @@ function FeatureCard({
 }) {
   return (
     <Card
-      className="rounded-2xl border-slate-200 bg-white p-5 shadow-sm"
+      className="group relative h-full overflow-hidden rounded-xl border-slate-200/70 bg-white/80 p-4 shadow-none transition-colors duration-200 hover:border-emerald-200 hover:bg-white motion-reduce:transition-none sm:p-5"
     >
-      <div className="text-emerald-700">{icon}</div>
-      <h3 className="font-semibold text-neutral-800">{title}</h3>
-      <p className="text-sm leading-relaxed text-neutral-600">{desc}</p>
+      <div className="mb-4 grid size-9 place-items-center rounded-lg bg-emerald-50/80 text-emerald-700 transition-colors group-hover:bg-emerald-100">
+        {icon}
+      </div>
+      <h3 className="text-sm font-semibold tracking-tight text-slate-800 sm:text-base">{title}</h3>
+      <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{desc}</p>
     </Card>
   );
 }

@@ -144,6 +144,6 @@
   box-shadow: 0 4px 8px rgb(15 23 42 / 10%);
 }
 
-  html.large-text {
-    font-size: 112.5%;
-  }
+html.large-text {
+  font-size: 125%;
+}
