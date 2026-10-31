@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { api } from "@/shared/api/baseApi";
 import uiReducer from "@/store/uiSlice";
 
+// RTK Query owns server-data caching; the UI slice owns local language/accessibility preferences.
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,

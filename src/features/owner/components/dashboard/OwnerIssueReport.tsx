@@ -1,5 +1,6 @@
 import ComplaintForm from "@/features/complaints/components/ComplaintForm";
 
+/** Configures the shared complaint form for an owner's fleet-management issues. */
 export default function OwnerIssueReport() {
   return (
     <ComplaintForm

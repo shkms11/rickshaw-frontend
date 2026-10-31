@@ -27,6 +27,7 @@ const filters: SearchType[] = [
   "Complaints",
 ];
 
+/** Collects the admin's search text and category, then passes both to the dashboard. */
 export default function AdminSearchBar({ onSearch }: AdminSearchBarProps) {
   const { lang } = useAppSelector((state) => state.ui);
   const [query, setQuery] = useState("");

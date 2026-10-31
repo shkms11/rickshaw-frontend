@@ -418,6 +418,7 @@ const bengali: Record<string, string> = {
     "Searching...": "অনুসন্ধান হচ্ছে...",
     "Fleet Owner Dashboard": "ফ্লিট মালিক ড্যাশবোর্ড",
     "Driver Dashboard": "চালক ড্যাশবোর্ড",
+    Dashboard: "ড্যাশবোর্ড",
     "Rickshaw Tracking System": "রিকশা ট্র্যাকিং সিস্টেম",
     "Rickshaw AI assistant": "রিকশা এআই সহকারী",
     "Role-based fleet help": "ভূমিকা অনুযায়ী ফ্লিট সহায়তা",
@@ -453,6 +454,7 @@ const bengali: Record<string, string> = {
     "drivers, owners & admins": "চালক, মালিক ও অ্যাডমিনদের জন্য",
 };
 
+/** Looks up exact English UI strings in the Bengali dictionary and falls back unchanged. */
 export function translate(lang: Lang, text: string): string {
     return lang === "bn" ? bengali[text] ?? text : text;
 }

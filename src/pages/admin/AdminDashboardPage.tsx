@@ -18,6 +18,7 @@ import AdminFleetActions from "@/features/admin/components/AdminFleetActions";
 import AdminFleetControls from "@/features/admin/components/AdminFleetControls";
 import AdminComplaintInbox from "@/features/admin/components/AdminComplaintInbox";
 
+/** Combines operational summaries, review queues, controls, search, and the fleet map. */
 export default function AdminDashboardPage() {
     const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
     const [searchAdmin, { data, isFetching, error }] = useLazySearchAdminQuery();

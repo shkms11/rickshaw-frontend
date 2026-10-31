@@ -10,6 +10,7 @@ import {
 import { useAppSelector } from "@/app/hooks";
 import { translate } from "@/shared/i18n";
 
+/** Renders one open alert/request and sends its review decision back to the API. */
 function ActionRow({ action }: { action: FleetAction }) {
   const { lang } = useAppSelector((state) => state.ui);
   const [review, { isLoading }] = useReviewFleetActionMutation();
@@ -84,6 +85,7 @@ function ActionRow({ action }: { action: FleetAction }) {
   );
 }
 
+/** Lists open lost-vehicle alerts and removal requests for administrator review. */
 export default function AdminFleetActions() {
   const { lang } = useAppSelector((state) => state.ui);
   const { data, isLoading, isError } = useGetFleetActionsQuery(undefined, {

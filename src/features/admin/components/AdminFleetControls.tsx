@@ -36,6 +36,7 @@ function isDriverStatus(value: string): value is (typeof driverStatuses)[number]
   return driverStatuses.some((status) => status === value);
 }
 
+/** Loads fleet and driver records, then submits permitted status changes through feature APIs. */
 export default function AdminFleetControls() {
   const { lang } = useAppSelector((state) => state.ui);
   const fleetQuery = useGetRickshawsQuery(undefined, { pollingInterval: 20000 });

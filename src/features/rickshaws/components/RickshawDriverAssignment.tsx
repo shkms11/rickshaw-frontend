@@ -27,6 +27,7 @@ function getErrorMessage(error: unknown) {
   return "Could not update driver assignment. Check your connection and try again.";
 }
 
+/** Searches approved drivers by phone and lets the owner assign, unassign, or view a driver. */
 export default function RickshawDriverAssignment({
   rickshaw,
   onViewDriverLocation,

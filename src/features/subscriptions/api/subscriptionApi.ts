@@ -16,6 +16,7 @@ export type OwnerSubscription = {
     paymentMode: "LIVE" | "SANDBOX" | "UNAVAILABLE";
 };
 
+/** Retrieves owner plan status and starts hosted checkout when payment is configured. */
 export const subscriptionApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getOwnerSubscription: builder.query<OwnerSubscription, void>({

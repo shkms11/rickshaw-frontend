@@ -10,6 +10,7 @@ import { useAppSelector } from "@/app/hooks";
 import { translate } from "@/shared/i18n";
 import type { GPSPoint } from "@/features/gps/types/gps.types";
 
+/** Lets a signed-in driver explicitly share browser GPS and report updates to the location API. */
 export default function DriverGpsPanel() {
     const { lang } = useAppSelector((state) => state.ui);
     const [saveLocation] = useSaveMyLocationMutation();
@@ -52,6 +53,7 @@ export default function DriverGpsPanel() {
                     timestamp: position.timestamp,
                 };
                 setPoint(next);
+                // Limit network writes while still keeping the browser's displayed position fresh.
                 if (Date.now() - lastSentAt.current >= 5000) {
                     lastSentAt.current = Date.now();
                     void saveLocation({

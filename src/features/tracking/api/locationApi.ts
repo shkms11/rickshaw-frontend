@@ -13,6 +13,7 @@ export type DriverLocation = {
     ownerName: string | null;
 };
 
+/** Driver GPS writes and role-scoped location reads used by the dashboard map. */
 export const locationApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getDriverLocations: builder.query<{ locations: DriverLocation[] }, void>({

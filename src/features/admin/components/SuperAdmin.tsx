@@ -62,6 +62,7 @@ const navigation: {
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
+/** Legacy local mock of super-admin navigation and user review; the live dashboard is AdminDashboardPage. */
 export default function SuperAdmin() {
   const [section, setSection] = useState<Section>("dashboard");
   const [users, setUsers] = useState<User[]>(initialUsers);

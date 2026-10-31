@@ -13,6 +13,7 @@ type RegistrationFormProps = {
   onBack?: () => void;
 };
 
+/** Creates driver or owner accounts through the auth API; new accounts await admin approval. */
 export default function RegistrationForm({
   role,
   onBack,

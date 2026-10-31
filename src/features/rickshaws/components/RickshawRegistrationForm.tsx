@@ -24,6 +24,7 @@ function getErrorMessage(error: unknown) {
   return "Could not register rickshaw. Check your connection and try again.";
 }
 
+/** Normalizes and submits a new vehicle record, then shows success or API validation feedback. */
 export default function RickshawRegistrationForm() {
   const { lang } = useAppSelector((state) => state.ui);
   const [createRickshaw, { isLoading }] = useCreateRickshawMutation();

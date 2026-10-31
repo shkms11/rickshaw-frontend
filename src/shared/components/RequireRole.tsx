@@ -8,6 +8,7 @@ type Props = {
     children: React.ReactNode;
 };
 
+/** Allows a page through only when the stored, unexpired session has an accepted role. */
 export default function RequireRole({ role, children }: Props) {
     const savedRole = getAuthenticatedRole();
     const allowedRoles = Array.isArray(role) ? role : [role];

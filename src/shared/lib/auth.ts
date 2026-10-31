@@ -1,5 +1,6 @@
 export type Role = "admin" | "owner" | "driver";
 
+// Legacy role-only helper using a separate key; current routing uses authSession.ts and its token check.
 const ROLE_KEY = "app_role";
 
 export function setRole(role: Role) {

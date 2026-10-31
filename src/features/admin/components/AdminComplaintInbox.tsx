@@ -9,6 +9,7 @@ import {
 import { useAppSelector } from "@/app/hooks";
 import { translate } from "@/shared/i18n";
 
+/** Polls the shared complaint queue and lets admins reopen or resolve reports. */
 export default function AdminComplaintInbox() {
   const { lang } = useAppSelector((state) => state.ui);
   const complaintsQuery = useGetAdminComplaintsQuery(undefined, { pollingInterval: 30000 });

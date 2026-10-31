@@ -33,6 +33,7 @@ function formatAccuracy(accuracy: number) {
         : `±${Math.round(accuracy)} m`;
 }
 
+/** Fits all initial reports once, then flies to a newly selected driver's point. */
 function MapViewController({
     locations,
     selectedLocation,
@@ -80,6 +81,7 @@ function MapViewController({
     return null;
 }
 
+/** Shows one driver's live/last-known state and details in a map popup. */
 function DriverMarker({
     location,
     selected,
@@ -200,6 +202,7 @@ type Props = {
     selectedDriverId?: string | null;
 };
 
+/** Renders location records from the tracking API, distinguishing live and last-known reports. */
 export default function FleetLocationMap({ selectedDriverId = null }: Props) {
     const { lang } = useAppSelector((state) => state.ui);
     const role = getAuthenticatedRole();

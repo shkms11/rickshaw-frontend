@@ -27,6 +27,7 @@ function getErrorMessage(error: unknown) {
   return "Could not send alert. Please contact the admin team.";
 }
 
+/** Confirms and submits a lost-vehicle alert, disabling duplicate reports while one is open. */
 export default function LostRickshawAlert({
   rickshawId,
   plateNo,

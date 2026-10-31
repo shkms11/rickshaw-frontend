@@ -25,6 +25,7 @@ function displayRole(approval: AdminApproval) {
     return approval.role ?? approval.user?.role ?? "User";
 }
 
+/** Loads pending registrations and submits approve/reject decisions to the admin API. */
 export default function AdminApprovals() {
     const { lang } = useAppSelector((state) => state.ui);
     const { data, isLoading, isError, refetch } = useGetAdminApprovalsQuery();

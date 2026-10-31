@@ -29,6 +29,7 @@ function getErrorMessage(error: unknown) {
   return "Could not submit the report. Check your connection and try again.";
 }
 
+/** Submits a user report through the complaint API and displays its request status. */
 export default function ComplaintForm({ title, description }: ComplaintFormProps) {
   const { lang } = useAppSelector((state) => state.ui);
   const [createComplaint, { isLoading }] = useCreateComplaintMutation();

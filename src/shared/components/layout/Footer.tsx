@@ -1,6 +1,7 @@
 import { useAppSelector } from "@/app/hooks";
 import { translate } from "@/shared/i18n";
 
+/** Shared translated footer used by the outer application layout. */
 export function Footer() {
   const { lang } = useAppSelector((state) => state.ui);
 

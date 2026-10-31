@@ -14,6 +14,7 @@ import NoticeBoard from "@/shared/components/dashboard/NoticeBoard";
 import OwnerSubscriptionPanel from "@/features/subscriptions/components/OwnerSubscriptionPanel";
 import { useGetOwnerSubscriptionQuery } from "@/features/subscriptions/api/subscriptionApi";
 
+/** Presents an owner's subscription, fleet records, assignments, locations, and reports. */
 export default function OwnerDashboardPage() {
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
@@ -32,6 +33,7 @@ export default function OwnerDashboardPage() {
   const fleet = data?.rickshaws ?? [];
 
   useEffect(() => {
+    // Payment providers return to this page with a result flag; refresh the server-owned plan.
     if (checkoutResult === "paid") void refetchSubscription();
   }, [checkoutResult, refetchSubscription]);
 

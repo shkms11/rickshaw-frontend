@@ -1,5 +1,6 @@
 import type { Driver } from "../types/driver.type";
 
+/** Sample driver fixture for UI development; the active dashboard loads its profile from the API. */
 export const mockDriver: Driver = {
   id: "d1",
   name: "Rahim",

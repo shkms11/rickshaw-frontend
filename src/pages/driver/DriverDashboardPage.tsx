@@ -3,6 +3,7 @@ import DriverDashboard, {
     type DriverAccount,
 } from "@/features/driver/components/dashboard/DriverDashboard";
 
+/** Reads the cached identity as a fallback; the dashboard separately loads the live driver profile. */
 export default function DriverDashboardPage() {
     let driver: DriverAccount = {
         name: "Driver",

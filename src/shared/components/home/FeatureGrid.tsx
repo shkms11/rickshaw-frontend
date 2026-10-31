@@ -6,6 +6,7 @@ type Props = {
   text: TextPack;
 };
 
+/** Displays one translated product capability in a consistent card. */
 function FeatureCard({
   icon,
   title,
@@ -28,6 +29,7 @@ function FeatureCard({
   );
 }
 
+/** Groups the four headline capabilities using the active bilingual text pack. */
 export function FeatureGrid({ text }: Props) {
   return (
     <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

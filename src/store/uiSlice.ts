@@ -7,6 +7,7 @@ type UIState = {
   largeText: boolean;
 };
 
+// Header persists changes to localStorage; this slice keeps rendered UI in sync during the session.
 const initialState: UIState = {
   lang:
     typeof window !== "undefined" && window.localStorage.getItem("lang") === "bn"

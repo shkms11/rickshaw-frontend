@@ -14,6 +14,7 @@ export type FleetAction = {
   createdBy: { name: string; role: string; phone: string | null };
 };
 
+/** Creates and reviews lost-vehicle alerts or owner removal requests across fleet views. */
 export const fleetActionApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getFleetActions: builder.query<{ actions: FleetAction[] }, void>({

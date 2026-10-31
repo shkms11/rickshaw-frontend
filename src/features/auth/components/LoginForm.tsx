@@ -27,6 +27,7 @@ const roleTitles: Record<LoginRole, string> = {
     admin: "Admin Login",
 };
 
+/** Sends credentials to the auth API, validates the returned role, and persists the session. */
 export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
     const { lang } = useAppSelector((state) => state.ui);
     const [identifier, setIdentifier] = useState("");
@@ -98,6 +99,7 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
             localStorage.setItem("token", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
             localStorage.setItem("role", authenticatedRole);
+            // The parent uses the verified role to navigate to its dashboard.
             onSubmit?.(authenticatedRole as AuthenticatedRole);
         } catch (error) {
             setMessage(

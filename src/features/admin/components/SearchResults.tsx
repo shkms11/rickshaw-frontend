@@ -21,6 +21,7 @@ interface SearchResultsProps {
   onViewDriverLocation: (driverId: string) => void;
 }
 
+/** Displays admin search states and forwards driver-location selections to the map owner. */
 export default function SearchResults({
   results,
   isLoading = false,

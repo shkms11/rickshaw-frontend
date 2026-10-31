@@ -8,6 +8,7 @@ type Props = {
     onSelect: (driverId: string) => void;
 };
 
+/** Signals the parent dashboard to select a driver's marker in its shared fleet map. */
 export default function DriverLocationButton({ driverId, onSelect }: Props) {
     const { lang } = useAppSelector((state) => state.ui);
 

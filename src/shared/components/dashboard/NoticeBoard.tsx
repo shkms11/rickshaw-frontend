@@ -26,6 +26,7 @@ const notices = {
   ],
 } satisfies Record<NoticeBoardProps["audience"], string[]>;
 
+/** Shows static role-specific operating reminders in the currently selected language. */
 export default function NoticeBoard({ audience }: NoticeBoardProps) {
   const { lang } = useAppSelector((state) => state.ui);
 

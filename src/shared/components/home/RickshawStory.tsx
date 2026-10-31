@@ -12,6 +12,7 @@ type Props = {
   text: TextPack;
 };
 
+/** Renders the bilingual heritage story with an accessible expandable source section. */
 export function RickshawStory({ text }: Props) {
   const [expanded, setExpanded] = useState(false);
 

@@ -24,6 +24,7 @@ function getErrorMessage(error: unknown) {
     return "Could not reach the assistant. Please try again.";
 }
 
+/** Global role-aware chat UI; sends the current language and request to the AI feature API. */
 export default function AiAssistant() {
     const [open, setOpen] = useState(false);
     const [draft, setDraft] = useState("");
@@ -38,6 +39,7 @@ export default function AiAssistant() {
     const role = getAuthenticatedRole();
     const session = localStorage.getItem("token") ?? "guest";
     const messages = useMemo(
+        // Do not show one account's conversation after the active token changes.
         () => chatState.session === session ? chatState.messages : [],
         [chatState.messages, chatState.session, session],
     );
@@ -104,16 +106,16 @@ export default function AiAssistant() {
                 <section
                     role="dialog"
                     aria-label={translate(lang, "Rickshaw AI assistant")}
-                    className="mb-3 flex h-[min(620px,calc(100dvh-120px))] w-[min(390px,calc(100vw-32px))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+                    className="mb-3 flex h-[min(640px,calc(100dvh-112px))] w-[min(420px,calc(100vw-32px))] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_60px_-16px_rgba(15,23,42,0.28)] ring-1 ring-slate-950/5"
                 >
-                    <header className="flex items-center justify-between bg-emerald-800 px-4 py-3 text-white">
+                    <header className="flex items-center justify-between border-b border-emerald-100 bg-gradient-to-r from-white via-emerald-50/70 to-white px-4 py-3.5 text-slate-900">
                         <div className="flex items-center gap-2.5">
-                            <span className="flex size-9 items-center justify-center rounded-xl bg-white/15">
+                            <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-700 text-white shadow-sm shadow-emerald-900/15">
                                 <Bot className="size-5" aria-hidden="true" />
                             </span>
                             <div>
                                 <h2 className="text-sm font-semibold">{translate(lang, "Rickshaw AI assistant")}</h2>
-                                <p className="text-[11px] text-emerald-100">
+                                <p className="text-xs text-slate-600">
                                     {role ? translate(lang, "Role-based fleet help") : translate(lang, "General help · no login needed")}
                                 </p>
                             </div>
@@ -122,7 +124,7 @@ export default function AiAssistant() {
                             type="button"
                             variant="ghost"
                             size="icon"
-                            className="text-white hover:bg-white/15 hover:text-white"
+                            className="size-10 rounded-xl text-slate-600 hover:bg-emerald-100 hover:text-emerald-900"
                             aria-label={translate(lang, "Close assistant")}
                             onClick={() => setOpen(false)}
                         >
@@ -130,19 +132,19 @@ export default function AiAssistant() {
                         </Button>
                     </header>
 
-                    <div className="flex items-center justify-between border-b px-4 py-2 text-[11px] text-slate-500">
+                    <div className="flex min-h-10 items-center justify-between gap-2 border-b border-slate-100 bg-white px-4 py-2 text-xs text-slate-600">
                         <span className="flex items-center gap-1.5">
                             <Sparkles className="size-3.5 text-emerald-700" aria-hidden="true" />
                             {mode === "groq"
                                 ? translate(lang, "Groq AI")
                                 : translate(lang, "Built-in assistant · no API key")}
                         </span>
-                        <span>{role ? translate(lang, role) : translate(lang, "Guest")}</span>
+                        <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">{role ? translate(lang, role) : translate(lang, "Guest")}</span>
                     </div>
 
-                    <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto bg-slate-50/80 p-3.5">
+                    <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto bg-slate-50/80 p-4">
                         {messages.length === 0 && (
-                            <div className="rounded-2xl rounded-tl-sm border bg-white p-3 text-sm leading-5 text-slate-700 shadow-sm">
+                            <div className="rounded-2xl rounded-tl-sm border border-emerald-100 bg-white p-4 text-sm leading-6 text-slate-700 shadow-sm">
                                 {role
                                     ? translate(lang, "Ask a question. Your answers only include information your role is allowed to see.")
                                     : translate(lang, "Ask a general question or learn about the fleet app. Sign in for private fleet insights.")}
@@ -151,30 +153,30 @@ export default function AiAssistant() {
                         {messages.map((message) => (
                             <div
                                 key={message.id}
-                                className={`max-w-[92%] whitespace-pre-wrap rounded-2xl px-3 py-2.5 text-sm leading-5 ${
+                                className={`max-w-[92%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm ${
                                     message.sender === "user"
                                         ? "ml-auto rounded-br-sm bg-emerald-700 text-white"
-                                        : "rounded-tl-sm border bg-white text-slate-700 shadow-sm"
+                                        : "rounded-tl-sm border border-slate-200 bg-white text-slate-700"
                                 }`}
                             >
                                 {message.text}
                             </div>
                         ))}
                         {request.isLoading && (
-                            <div className="flex items-center gap-2 text-xs text-slate-500">
+                            <div className="flex items-center gap-2 text-sm text-slate-600">
                                 <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
                                 {translate(lang, "Thinking...")}
                             </div>
                         )}
                     </div>
 
-                    <div className="flex gap-2 overflow-x-auto border-t bg-white px-3 py-2">
+                    <div className="flex gap-2 overflow-x-auto border-t border-slate-100 bg-white px-3 py-2.5">
                         {suggestions.map((suggestion) => (
                             <button
                                 key={suggestion}
                                 type="button"
                                 disabled={request.isLoading}
-                                className="shrink-0 rounded-full border border-emerald-100 px-2.5 py-1 text-[11px] text-emerald-800 hover:bg-emerald-50 disabled:opacity-50"
+                                className="min-h-9 shrink-0 rounded-full border border-emerald-200 bg-emerald-50/50 px-3 text-xs font-medium text-emerald-900 transition-colors hover:bg-emerald-100 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
                                 onClick={() => void submitMessage(undefined, suggestion)}
                             >
                                 {translate(lang, suggestion)}
@@ -182,7 +184,7 @@ export default function AiAssistant() {
                         ))}
                     </div>
 
-                    <form onSubmit={(event) => void submitMessage(event)} className="flex items-end gap-2 border-t bg-white p-3">
+                    <form onSubmit={(event) => void submitMessage(event)} className="flex items-end gap-2 border-t border-slate-100 bg-white p-3">
                         <label className="sr-only" htmlFor="ai-chat-message">
                             {translate(lang, "Ask the assistant")}
                         </label>
@@ -192,7 +194,7 @@ export default function AiAssistant() {
                             maxLength={500}
                             rows={1}
                             placeholder={translate(lang, "Type a question...")}
-                            className="max-h-24 min-h-10 flex-1 resize-y rounded-xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                            className="max-h-24 min-h-11 flex-1 resize-y rounded-xl border border-slate-300 px-3 py-2.5 text-sm leading-6 text-slate-900 outline-none placeholder:text-slate-500 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
                             onChange={(event) => setDraft(event.target.value)}
                             onKeyDown={(event) => {
                                 if (event.key === "Enter" && !event.shiftKey) {
@@ -204,7 +206,7 @@ export default function AiAssistant() {
                         <Button
                             type="submit"
                             size="icon"
-                            className="size-10 rounded-xl bg-emerald-700 text-white hover:bg-emerald-800"
+                            className="size-11 rounded-xl bg-emerald-700 text-white shadow-sm hover:bg-emerald-800"
                             disabled={!draft.trim() || request.isLoading}
                             aria-label={translate(lang, "Send message")}
                         >
@@ -215,7 +217,7 @@ export default function AiAssistant() {
             )}
             <Button
                 type="button"
-                className="ml-auto flex size-14 rounded-full bg-emerald-700 text-white shadow-xl shadow-emerald-950/25 hover:bg-emerald-800"
+                className="ml-auto flex size-14 rounded-2xl bg-emerald-700 text-white shadow-lg shadow-emerald-950/20 transition hover:-translate-y-0.5 hover:bg-emerald-800 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-2"
                 aria-label={translate(lang, open ? "Close assistant" : "Open AI assistant")}
                 aria-expanded={open}
                 onClick={() => setOpen((current) => !current)}

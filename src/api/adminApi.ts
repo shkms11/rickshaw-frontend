@@ -78,6 +78,7 @@ export type AdminDriver = {
     rickshaw: { id: string; plateNo: string } | null;
 };
 
+/** Admin queries/mutations shared by the admin dashboard and its review/control widgets. */
 export const adminApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getAdminDashboardSummary: builder.query<AdminDashboardSummary, void>({

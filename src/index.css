@@ -147,3 +147,39 @@
 html.large-text {
   font-size: 125%;
 }
+
+.dashboard-theme [data-slot="card"]:not(.bg-transparent) {
+  border: 1px solid rgb(226 232 240 / 90%);
+  border-radius: 1rem;
+  background-color: rgb(255 255 255 / 96%);
+  box-shadow: 0 2px 8px rgb(15 23 42 / 4%);
+}
+
+.dashboard-theme [data-slot="card"]:not(.bg-transparent) > .border-b,
+.dashboard-theme [data-slot="card"]:not(.bg-transparent) > .border-t {
+  border-color: rgb(226 232 240 / 80%);
+}
+
+.dashboard-theme .divide-y > :not(:first-child) {
+  border-color: rgb(226 232 240 / 80%);
+}
+
+.dashboard-theme [data-slot="button"] {
+  border-radius: 0.75rem;
+}
+
+.dashboard-theme [data-slot="input"],
+.dashboard-theme select,
+.dashboard-theme textarea {
+  border-color: rgb(203 213 225 / 90%);
+  border-radius: 0.75rem;
+  background-color: white;
+}
+
+.dashboard-theme [data-slot="input"]:focus-visible,
+.dashboard-theme select:focus-visible,
+.dashboard-theme textarea:focus-visible {
+  border-color: rgb(5 150 105);
+  outline: 2px solid rgb(16 185 129 / 25%);
+  outline-offset: 1px;
+}

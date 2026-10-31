@@ -1,5 +1,6 @@
 import ComplaintForm from "@/features/complaints/components/ComplaintForm";
 
+/** Configures the shared complaint form for driver vehicle, account, or safety reports. */
 export default function DriverIssueReport() {
   return (
     <ComplaintForm

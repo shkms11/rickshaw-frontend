@@ -9,6 +9,7 @@ import DriverDashboardPage from "@/pages/driver/DriverDashboardPage";
 
 import RequireRole from "@/shared/components/RequireRole";
 
+/** Maps public and role-specific URLs to pages, with role checks at dashboard boundaries. */
 export default function AppRoutes() {
     return (
         <Routes>

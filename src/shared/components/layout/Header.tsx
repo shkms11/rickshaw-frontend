@@ -16,6 +16,7 @@ type Props = {
     };
 };
 
+/** Shared navigation header with language, text-size, home, and session logout controls. */
 export function Header({ title }: Props) {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
@@ -30,6 +31,7 @@ export function Header({ title }: Props) {
 
     // Hide on scroll down; show on scroll up.
     useEffect(() => {
+        // Keep document-level language and text scaling in sync with the persisted UI state.
         document.documentElement.lang = lang;
         document.documentElement.classList.toggle("large-text", largeText);
     }, [lang, largeText]);

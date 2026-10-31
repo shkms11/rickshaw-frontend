@@ -6,6 +6,7 @@ type ScanIdProps = {
   onFileSelected?: (file: File | null) => void;
 };
 
+/** Offers an image-only camera or file picker and returns the selected file to its parent. */
 export default function ScanId({ onFileSelected }: ScanIdProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");

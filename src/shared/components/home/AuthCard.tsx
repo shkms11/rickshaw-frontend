@@ -43,6 +43,7 @@ const roles: Array<{
     },
 ];
 
+/** Lets visitors choose a role and switches between the matching login or registration form. */
 export function AuthCard({ text, onAuthenticated }: Props) {
     const { lang } = useAppSelector((state) => state.ui);
     const [mode, setMode] = useState<AuthMode>("login");

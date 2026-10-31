@@ -5,6 +5,7 @@ type Props = {
   text: TextPack;
 };
 
+/** Formats one informational statistic tile. */
 function StatBox({
   label,
   value,
@@ -30,6 +31,7 @@ function StatBox({
   );
 }
 
+/** Presents the landing page's short system description and informational metrics. */
 export function InfoStatsSection({ text }: Props) {
   return (
     <section className="grid gap-6 lg:grid-cols-3">

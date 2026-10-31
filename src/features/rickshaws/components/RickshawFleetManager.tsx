@@ -38,6 +38,7 @@ type RickshawFleetRowProps = {
   onViewDriverLocation: (driverId: string) => void;
 };
 
+/** Combines one vehicle's status, location, pending fleet actions, and assignment controls. */
 function RickshawFleetRow({
   vehicle,
   actions,
@@ -150,6 +151,7 @@ function RickshawFleetRow({
   );
 }
 
+/** Polls fleet/action/location APIs and coordinates each vehicle row with the shared map. */
 export default function RickshawFleetManager({
   onViewDriverLocation,
 }: {

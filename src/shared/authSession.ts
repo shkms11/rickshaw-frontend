@@ -1,5 +1,6 @@
 export type AuthRole = "driver" | "owner" | "admin" | "super_admin";
 
+/** Reads the browser session and rejects expired/malformed tokens before choosing a route. */
 export function getAuthenticatedRole(): AuthRole | null {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");

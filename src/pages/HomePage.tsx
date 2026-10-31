@@ -16,6 +16,7 @@ import { HOME_TEXT } from "@/shared/types/home.content";
 import { getAuthenticatedRole } from "@/shared/authSession";
 import type { AuthenticatedRole } from "@/features/auth/components/LoginForm";
 
+/** Shows the bilingual landing/auth experience and routes signed-in users to their dashboard. */
 export default function HomePage() {
     const navigate = useNavigate();
     const { lang } = useAppSelector((state) => state.ui);
@@ -23,6 +24,7 @@ export default function HomePage() {
     const text = HOME_TEXT[lang];
     const role = getAuthenticatedRole();
 
+    // Keep an existing valid session out of the public sign-in screen.
     if (role) {
         return (
             <Navigate
@@ -37,6 +39,7 @@ export default function HomePage() {
     }
 
     function handleAuthenticatedRole(authenticatedRole: AuthenticatedRole) {
+        // LoginForm persists the session first; navigation then opens its role dashboard.
         navigate(
             authenticatedRole === "admin" ||
                 authenticatedRole === "super_admin"

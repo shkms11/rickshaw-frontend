@@ -2,6 +2,7 @@ import * as React from "react";
 
 const MOBILE_BREAKPOINT = 768;
 
+/** Tracks the viewport breakpoint and cleans up its media-query listener on unmount. */
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
     undefined,

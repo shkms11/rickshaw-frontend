@@ -15,6 +15,7 @@ const statusColorMap: Record<Driver["status"], string> = {
   pending_verification: "bg-blue-500",
 };
 
+/** Shows the supplied driver's identity, status, contact, and assigned-vehicle details. */
 export default function DriverProfile({ driver }: Props) {
   return (
     <div className="relative overflow-hidden rounded-3xl border border-white/30 bg-white/20 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.08)]">

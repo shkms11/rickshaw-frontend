@@ -10,6 +10,7 @@ const initialGrid: Cell[] = Array.from({ length: 25 }).map((_, i) => ({
   intensity: Math.random(),
 }));
 
+/** Displays a local randomized congestion-style sample grid; it is not backed by traffic data. */
 export default function TrafficHeatmap() {
   const [grid] = useState(initialGrid);
 

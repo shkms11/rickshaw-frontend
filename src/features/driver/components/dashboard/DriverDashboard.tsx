@@ -15,6 +15,7 @@ export type DriverAccount = {
     driver?: { licenseNo?: string } | null;
 };
 
+/** Combines the driver's server profile with GPS, assigned-vehicle alerts, and report actions. */
 export default function DriverDashboard({ driver }: { driver: DriverAccount }) {
     const { lang } = useAppSelector((state) => state.ui);
     const profileQuery = useGetMyDriverProfileQuery(undefined, { pollingInterval: 15000 });

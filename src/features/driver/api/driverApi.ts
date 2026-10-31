@@ -19,6 +19,7 @@ export type DriverProfile = {
   } | null;
 };
 
+/** Loads the signed-in driver's server-owned profile for dashboard identity and assignment details. */
 export const driverApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getMyDriverProfile: builder.query<{ driver: DriverProfile }, void>({

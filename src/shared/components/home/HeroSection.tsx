@@ -8,6 +8,7 @@ type Props = {
   onLearnMore: () => void;
 };
 
+/** Landing-page introduction with parent-provided actions for account and feature navigation. */
 export function HeroSection({ text, onGetStarted, onLearnMore }: Props) {
   return (
     <section className="space-y-6 py-4">

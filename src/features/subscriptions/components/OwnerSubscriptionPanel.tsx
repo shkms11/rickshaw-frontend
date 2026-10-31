@@ -41,6 +41,7 @@ function getErrorMessage(error: unknown) {
     return "Could not start payment. Please try again.";
 }
 
+/** Summarizes an owner's plan and starts hosted checkout when the API reports it is available. */
 export default function OwnerSubscriptionPanel({
     subscription,
     rickshawCount,

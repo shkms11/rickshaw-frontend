@@ -21,6 +21,7 @@ export type OwnerDriver = {
     rickshaw: { id: string; plateNo: string } | null;
 };
 
+/** Fleet endpoints for owner vehicle records and approved-driver assignment workflows. */
 export const rickshawApi = api.injectEndpoints({
     endpoints: (builder) => ({
         getRickshaws: builder.query<{ rickshaws: Rickshaw[] }, void>({

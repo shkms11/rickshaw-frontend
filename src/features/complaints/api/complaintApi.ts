@@ -14,6 +14,7 @@ export type AdminComplaint = {
   user: { name: string; phone: string | null; role: string };
 };
 
+/** Shared complaint endpoints connect user report forms to the administrator inbox. */
 export const complaintApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createComplaint: builder.mutation<
