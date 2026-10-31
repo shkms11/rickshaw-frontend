@@ -29,6 +29,7 @@ export const api = createApi({
         "DriverLocation",
         "Rickshaw",
         "FleetAction",
+        "Subscription",
     ],
 
     endpoints: () => ({}),

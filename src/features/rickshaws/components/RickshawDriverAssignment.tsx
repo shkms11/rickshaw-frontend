@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { useAppSelector } from "@/app/hooks";
 import { useLazySearchOwnerDriverQuery, useAssignRickshawDriverMutation, type Rickshaw } from "@/features/rickshaws/api/rickshawApi";
 import { translate } from "@/shared/i18n";
+import DriverLocationButton from "@/features/tracking/components/DriverLocationButton";
 
 type Props = {
   rickshaw: Rickshaw;
+  onViewDriverLocation: (driverId: string) => void;
 };
 
 function getErrorMessage(error: unknown) {
@@ -25,7 +27,10 @@ function getErrorMessage(error: unknown) {
   return "Could not update driver assignment. Check your connection and try again.";
 }
 
-export default function RickshawDriverAssignment({ rickshaw }: Props) {
+export default function RickshawDriverAssignment({
+  rickshaw,
+  onViewDriverLocation,
+}: Props) {
   const { lang } = useAppSelector((state) => state.ui);
   const [phone, setPhone] = useState("");
   const [searchedPhone, setSearchedPhone] = useState("");
@@ -114,6 +119,12 @@ export default function RickshawDriverAssignment({ rickshaw }: Props) {
               >
                 {translate(lang, assignmentState.isLoading ? "Saving assignment..." : "Assign driver")}
               </Button>
+              {result.rickshaw && (
+                <DriverLocationButton
+                  driverId={result.id}
+                  onSelect={onViewDriverLocation}
+                />
+              )}
             </div>
           )}
           {rickshaw.driver && (

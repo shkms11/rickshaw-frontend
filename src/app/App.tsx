@@ -1,6 +1,7 @@
 import { HashRouter } from "react-router-dom";
 import Providers from "./providers";
 import AppRoutes from "@/routes/AppRoutes";
+import AiAssistant from "@/features/ai/components/AiAssistant";
 
 export default function App() {
   return (
@@ -8,6 +9,7 @@ export default function App() {
     <HashRouter>
       <Providers>
         <AppRoutes />
+        <AiAssistant />
       </Providers>
     </HashRouter>
   );

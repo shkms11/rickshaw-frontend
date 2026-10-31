@@ -35,9 +35,16 @@ type RickshawFleetRowProps = {
   actions: FleetAction[];
   locations: { rickshawPlate: string | null; isLive: boolean; updatedAt: string }[];
   trackingError: boolean;
+  onViewDriverLocation: (driverId: string) => void;
 };
 
-function RickshawFleetRow({ vehicle, actions, locations, trackingError }: RickshawFleetRowProps) {
+function RickshawFleetRow({
+  vehicle,
+  actions,
+  locations,
+  trackingError,
+  onViewDriverLocation,
+}: RickshawFleetRowProps) {
   const { lang } = useAppSelector((state) => state.ui);
   const [requestRemoval, { isLoading }] = useRequestRickshawRemovalMutation();
   const [message, setMessage] = useState("");
@@ -134,13 +141,20 @@ function RickshawFleetRow({ vehicle, actions, locations, trackingError }: Ricksh
           isAlertOpen={false}
         />
       )}
-      <RickshawDriverAssignment rickshaw={vehicle} />
+      <RickshawDriverAssignment
+        rickshaw={vehicle}
+        onViewDriverLocation={onViewDriverLocation}
+      />
       {message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}
     </div>
   );
 }
 
-export default function RickshawFleetManager() {
+export default function RickshawFleetManager({
+  onViewDriverLocation,
+}: {
+  onViewDriverLocation: (driverId: string) => void;
+}) {
   const { lang } = useAppSelector((state) => state.ui);
   const fleetQuery = useGetRickshawsQuery(undefined, { pollingInterval: 20000 });
   const actionsQuery = useGetFleetActionsQuery(undefined, { pollingInterval: 20000 });
@@ -176,6 +190,7 @@ export default function RickshawFleetManager() {
               actions={actions}
               locations={locations}
               trackingError={locationsQuery.isError}
+              onViewDriverLocation={onViewDriverLocation}
             />
           ))}
         </div>

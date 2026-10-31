@@ -1,6 +1,7 @@
 import { api } from "@/shared/api/baseApi";
 
 export type DriverLocation = {
+    driverId: string;
     latitude: number;
     longitude: number;
     accuracy: number | null;
@@ -9,6 +10,7 @@ export type DriverLocation = {
     isLive: boolean;
     driverName: string;
     rickshawPlate: string | null;
+    ownerName: string | null;
 };
 
 export const locationApi = api.injectEndpoints({

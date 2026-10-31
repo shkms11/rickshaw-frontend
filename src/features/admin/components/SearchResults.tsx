@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAppSelector } from "@/app/hooks";
 import { translate } from "@/shared/i18n";
+import DriverLocationButton from "@/features/tracking/components/DriverLocationButton";
 
 export type SearchResult = {
   id: string;
@@ -17,6 +18,7 @@ interface SearchResultsProps {
   isLoading?: boolean;
   error?: boolean;
   hasSearched?: boolean;
+  onViewDriverLocation: (driverId: string) => void;
 }
 
 export default function SearchResults({
@@ -24,6 +26,7 @@ export default function SearchResults({
   isLoading = false,
   error = false,
   hasSearched = false,
+  onViewDriverLocation,
 }: SearchResultsProps) {
   const { lang } = useAppSelector((state) => state.ui);
 
@@ -80,9 +83,17 @@ export default function SearchResults({
             )}
           </div>
 
-          <Badge variant="outline" className="shrink-0 capitalize">
-            {translate(lang, result.type)}
-          </Badge>
+          <div className="flex shrink-0 items-center gap-2">
+            {result.type === "driver" && (
+              <DriverLocationButton
+                driverId={result.id}
+                onSelect={onViewDriverLocation}
+              />
+            )}
+            <Badge variant="outline" className="capitalize">
+              {translate(lang, result.type)}
+            </Badge>
+          </div>
         </div>
       ))}
     </Card>

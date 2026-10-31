@@ -1,3 +1,4 @@
+import { useState } from "react";
 import DashboardLayout from "@/shared/components/layout/DashboardLayout";
 import { Card } from "@/components/ui/card";
 import AdminApprovals from "@/features/admin/components/AdminApprovals";
@@ -18,6 +19,7 @@ import AdminFleetControls from "@/features/admin/components/AdminFleetControls";
 import AdminComplaintInbox from "@/features/admin/components/AdminComplaintInbox";
 
 export default function AdminDashboardPage() {
+    const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
     const [searchAdmin, { data, isFetching, error }] = useLazySearchAdminQuery();
     const {
         data: summary,
@@ -73,9 +75,10 @@ export default function AdminDashboardPage() {
                         hasSearched={isFetching || !!data || !!error}
                         isLoading={isFetching}
                         error={Boolean(error)}
+                        onViewDriverLocation={setSelectedDriverId}
                     />
                 </Card>
-                <FleetLocationMap />
+                <FleetLocationMap selectedDriverId={selectedDriverId} />
             </div>
         </DashboardLayout>
     );
