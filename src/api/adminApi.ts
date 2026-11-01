@@ -136,10 +136,12 @@ export type AdminFleetDriver = {
     id: string;
     status: "ONLINE" | "OFFLINE" | "ON_TRIP";
     user: {
+        id: string;
         name: string;
         phone: string | null;
         email: string | null;
         approvalStatus: "PENDING" | "APPROVED" | "REJECTED";
+        isRestricted: boolean;
     };
     rickshaw: { plateNo: string } | null;
 };
@@ -258,7 +260,7 @@ export const adminApi = api.injectEndpoints({
                 method: "PATCH",
                 body,
             }),
-            invalidatesTags: ["ManagedAccounts", "Approval"],
+            invalidatesTags: ["ManagedAccounts", "Approval", "Driver"],
         }),
         searchAdmin: builder.query<AdminSearchResponse, AdminSearchParams>({
             query: ({ query, type }) => ({

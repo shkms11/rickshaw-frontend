@@ -87,8 +87,10 @@ Owner plan details and hosted checkout use `subscriptionApi.ts` and
 `OwnerSubscriptionPanel.tsx`.
 
 Admin data flows through `api/adminApi.ts` for summaries, approvals, driver
-status, and search. Feature widgets call generated RTK Query hooks; mutation
-tag invalidation refreshes affected cached lists. The shared
+status, account restrictions, and search. `AdminFleetControls` groups rickshaw,
+driver, and owner management into one filtered panel. Feature widgets call
+generated RTK Query hooks; mutation tag invalidation refreshes affected cached
+lists. The shared
 `shared/api/baseApi.ts` supplies the `/api` base URL and stored bearer token.
 
 ## Localization and accessibility

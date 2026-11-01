@@ -21,7 +21,6 @@ import ProfileEditor from "@/features/profile/components/ProfileEditor";
 import CreateScopedAdmin from "@/features/admin/components/CreateScopedAdmin";
 import AnnouncementManager from "@/features/admin/components/AnnouncementManager";
 import AdminCongestionReport from "@/features/admin/components/AdminCongestionReport";
-import AccountRestrictions from "@/features/admin/components/AccountRestrictions";
 
 /** Combines operational summaries, review queues, controls, search, and the fleet map. */
 export default function AdminDashboardPage() {
@@ -80,12 +79,13 @@ export default function AdminDashboardPage() {
                         <AdminApprovals />
                     </>
                 )}
-                {(localStorage.getItem("role") === "super_admin" || (summary && !summary.isObserver)) && (
-                    <AccountRestrictions />
-                )}
                 <AdminFleetActions />
                 <AdminCongestionReport />
-                <AdminFleetControls />
+                <AdminFleetControls
+                    canRestrictAccounts={
+                        localStorage.getItem("role") === "super_admin" || Boolean(summary && !summary.isObserver)
+                    }
+                />
                 <AdminComplaintInbox />
                 <Card className="space-y-4 p-5 sm:p-6">
                     <AdminSearchBar onSearch={handleSearch} />
