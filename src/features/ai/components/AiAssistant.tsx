@@ -2,12 +2,121 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useLocation } from "react-router-dom";
 import { Bot, LoaderCircle, MessageCircle, Send, Sparkles, X } from "lucide-react";
 import { useAppSelector } from "@/app/hooks";
-import { useSendAiMessageMutation } from "@/features/ai/api/aiApi";
+import {
+    useConfirmAiActionMutation,
+    useSendAiMessageMutation,
+    useUndoAiActionMutation,
+    type AiProposedAction,
+} from "@/features/ai/api/aiApi";
 import { Button } from "@/components/ui/button";
 import { translate } from "@/shared/i18n";
 import { getAuthenticatedRole } from "@/shared/authSession";
 
-type Message = { id: number; sender: "user" | "assistant"; text: string };
+type Message = {
+    id: number;
+    sender: "user" | "assistant";
+    text: string;
+    proposal?: { token: string; action: AiProposedAction };
+    undoActionId?: string;
+};
+
+const suggestionOptions: Record<string, string[]> = {
+    admin: [
+        "Show fleet summary",
+        "Where is driver shamusl?",
+        "Show traffic usage by area",
+        "How many rickshaws are active?",
+        "Which areas had the most trips this week?",
+        "How do I update a notice?",
+    ],
+    super_admin: [
+        "Show fleet summary",
+        "Where is driver shamusl?",
+        "Show traffic usage by area",
+        "How many rickshaws are active?",
+        "Which areas had the most trips this week?",
+        "How do I update a notice?",
+    ],
+    owner: [
+        "Show my fleet summary",
+        "Where is my assigned driver?",
+        "Show my fleet's busiest areas",
+        "How many rickshaws are active?",
+        "Which areas had the most trips this week?",
+        "How do I update my profile?",
+    ],
+    driver: [
+        "Show my driver status",
+        "How do I share GPS?",
+        "Give me road safety tips",
+        "How does GPS tracking work?",
+        "What can this app do?",
+    ],
+    guest: [
+        "What can this app do?",
+        "How does GPS tracking work?",
+        "Give me road safety tips",
+        "How do I register?",
+    ],
+};
+
+function getAssistantSuggestions(
+    role: string | null,
+    pathname: string,
+    messages: Message[],
+    language: "en" | "bn",
+) {
+    const options = suggestionOptions[role ?? "guest"] ?? suggestionOptions.guest!;
+    const path = pathname.toLowerCase();
+    const dashboardFocus = path.includes("map") || path.includes("tracking") || path.includes("gps")
+        ? ["Where is driver shamusl?", "How do I share GPS?", "How does GPS tracking work?"]
+        : path.includes("trip") || path.includes("report") || path.includes("traffic")
+            ? ["Show traffic usage by area", "Show my fleet's busiest areas", "Which areas had the most trips this week?"]
+            : path.includes("fleet") || path.includes("rickshaw")
+                ? ["Show fleet summary", "Show my fleet summary", "How many rickshaws are active?"]
+                : [];
+    const ranked = [
+        ...dashboardFocus.filter((question) => options.includes(question)),
+        ...options.filter((question) => !dashboardFocus.includes(question)),
+    ];
+    const recentQuestions = new Set(
+        messages
+            .filter((message) => message.sender === "user")
+            .slice(-4)
+            .map((message) => message.text.trim().toLocaleLowerCase()),
+    );
+    const unseen = ranked.filter(
+        (question) => !recentQuestions.has(translate(language, question).toLocaleLowerCase()),
+    );
+    const available = unseen.length >= 3 ? unseen : ranked;
+    const userQuestionCount = messages.filter((message) => message.sender === "user").length;
+    const start = Math.floor(userQuestionCount / 2) % available.length;
+    return Array.from({ length: Math.min(3, available.length) }, (_, index) =>
+        available[(start + index) % available.length]!,
+    );
+}
+
+function describeProposal(action: AiProposedAction) {
+    switch (action.kind) {
+        case "create_announcement":
+            return `Publish "${action.title}" to ${action.recipientQuery ? `${action.recipientQuery} (${action.audience})` : action.audience}${action.ownerQuery ? ` for ${action.ownerQuery}` : action.allOwners ? " across all owners" : ""}\n\n${action.message}`;
+        case "update_announcement":
+            return `Edit "${action.existingTitle}"${action.title ? ` to "${action.title}"` : ""}${action.message ? `\n\nNew message:\n${action.message}` : ""}`;
+        case "set_rickshaw_status":
+            return `Set rickshaw ${action.plateNo} to ${action.status}`;
+        case "set_driver_status":
+            return `Set driver ${action.phone} to ${action.status}`;
+    }
+}
+
+function formatAssistantReply(text: string) {
+    return text
+        .replace(/\*\*(.+?)\*\*/g, "$1")
+        .replace(/__(.+?)__/g, "$1")
+        .replace(/`([^`]+)`/g, "$1")
+        .replace(/^#{1,6}\s+/gm, "")
+        .replace(/^\s*[-*]\s+/gm, "• ");
+}
 
 function getErrorMessage(error: unknown) {
     if (
@@ -32,10 +141,13 @@ export default function AiAssistant() {
         session: string;
         messages: Message[];
         mode: "local" | "groq";
-    }>(() => ({ session: "guest", messages: [], mode: "local" }));
+        providerStatus: "missing_key" | "unavailable" | "available" | "not_used";
+    }>(() => ({ session: "guest", messages: [], mode: "local", providerStatus: "not_used" }));
     const [sendMessage, request] = useSendAiMessageMutation();
+    const [confirmAction, confirmation] = useConfirmAiActionMutation();
+    const [undoAction, undoState] = useUndoAiActionMutation();
     const { lang } = useAppSelector((state) => state.ui);
-    useLocation();
+    const location = useLocation();
     const role = getAuthenticatedRole();
     const session = localStorage.getItem("token") ?? "guest";
     const messages = useMemo(
@@ -51,13 +163,10 @@ export default function AiAssistant() {
         listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
     }, [messages, request.isLoading]);
 
-    const suggestions = role === "admin" || role === "super_admin"
-        ? ["Show fleet summary", "Where is driver shamusl?", "Show traffic usage by area"]
-        : role === "owner"
-            ? ["Show my fleet summary", "Where is my assigned driver?", "Show my fleet's busiest areas"]
-            : role === "driver"
-                ? ["Show my driver status", "How do I share GPS?", "Give me road safety tips"]
-                : ["What can this app do?", "How does GPS tracking work?", "Give me road safety tips"];
+    const suggestions = useMemo(
+        () => getAssistantSuggestions(role, location.pathname, messages, lang),
+        [lang, location.pathname, messages, role],
+    );
 
     async function submitMessage(event?: FormEvent<HTMLFormElement>, suggested?: string) {
         event?.preventDefault();
@@ -68,6 +177,7 @@ export default function AiAssistant() {
         setChatState((current) => ({
             session,
             mode: current.session === session ? current.mode : "local",
+            providerStatus: current.session === session ? current.providerStatus : "not_used",
             messages: [
                 ...(current.session === session ? current.messages : []),
                 userMessage,
@@ -82,9 +192,15 @@ export default function AiAssistant() {
                 : {
                     ...current,
                     mode: result.mode,
+                    providerStatus: result.providerStatus,
                     messages: [
                         ...current.messages,
-                        { id: nextMessageId.current++, sender: "assistant", text: result.reply },
+                        {
+                            id: nextMessageId.current++,
+                            sender: "assistant",
+                            text: result.reply,
+                            ...(result.proposal ? { proposal: result.proposal } : {}),
+                        },
                     ],
                 });
         } catch (error) {
@@ -96,6 +212,52 @@ export default function AiAssistant() {
                         ...current.messages,
                         { id: nextMessageId.current++, sender: "assistant", text: translate(lang, getErrorMessage(error)) },
                     ],
+                });
+        }
+    }
+
+    async function confirmProposal(messageId: number, proposalToken: string) {
+        try {
+            const result = await confirmAction({ proposalToken }).unwrap();
+            setChatState((current) => current.session !== session
+                ? current
+                : {
+                    ...current,
+                    messages: current.messages.map((message) => message.id === messageId
+                        ? { ...message, text: `${message.text}\n${translate(lang, result.message)}`, proposal: undefined, undoActionId: result.actionId }
+                        : message),
+                });
+        } catch (error) {
+            setChatState((current) => current.session !== session
+                ? current
+                : {
+                    ...current,
+                    messages: current.messages.map((message) => message.id === messageId
+                        ? { ...message, text: `${message.text}\n${translate(lang, getErrorMessage(error))}` }
+                        : message),
+                });
+        }
+    }
+
+    async function undoConfirmedAction(messageId: number, actionId: string) {
+        try {
+            const result = await undoAction({ actionId }).unwrap();
+            setChatState((current) => current.session !== session
+                ? current
+                : {
+                    ...current,
+                    messages: current.messages.map((message) => message.id === messageId
+                        ? { ...message, text: `${message.text}\n${translate(lang, result.message)}`, undoActionId: undefined }
+                        : message),
+                });
+        } catch (error) {
+            setChatState((current) => current.session !== session
+                ? current
+                : {
+                    ...current,
+                    messages: current.messages.map((message) => message.id === messageId
+                        ? { ...message, text: `${message.text}\n${translate(lang, getErrorMessage(error))}` }
+                        : message),
                 });
         }
     }
@@ -137,7 +299,11 @@ export default function AiAssistant() {
                             <Sparkles className="size-3.5 text-emerald-700" aria-hidden="true" />
                             {mode === "groq"
                                 ? translate(lang, "Groq AI")
-                                : translate(lang, "Built-in assistant · no API key")}
+                                : chatState.providerStatus === "missing_key"
+                                    ? translate(lang, "Built-in assistant · backend API key missing")
+                                    : chatState.providerStatus === "unavailable"
+                                        ? translate(lang, "Groq API request failed")
+                                        : translate(lang, "Built-in assistant")}
                         </span>
                         <span className="rounded-full bg-slate-100 px-2.5 py-1 font-medium text-slate-700">{role ? translate(lang, role) : translate(lang, "Guest")}</span>
                     </div>
@@ -159,7 +325,36 @@ export default function AiAssistant() {
                                         : "rounded-tl-sm border border-slate-200 bg-white text-slate-700"
                                 }`}
                             >
-                                {message.text}
+                                {message.sender === "assistant" ? formatAssistantReply(message.text) : message.text}
+                                {message.proposal && (
+                                    <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-slate-800">
+                                        <p className="text-xs font-semibold">{translate(lang, "Proposed change")}</p>
+                                        <p className="mt-1 whitespace-pre-wrap text-xs">{describeProposal(message.proposal.action)}</p>
+                                        <div className="mt-3 flex gap-2">
+                                            <Button
+                                                type="button"
+                                                size="sm"
+                                                disabled={confirmation.isLoading}
+                                                className="bg-emerald-700 text-white hover:bg-emerald-800"
+                                                onClick={() => message.proposal && void confirmProposal(message.id, message.proposal.token)}
+                                            >
+                                                {translate(lang, confirmation.isLoading ? "Applying..." : "Confirm")}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+                                {message.undoActionId && (
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        variant="outline"
+                                        className="mt-3"
+                                        disabled={undoState.isLoading}
+                                        onClick={() => message.undoActionId && void undoConfirmedAction(message.id, message.undoActionId)}
+                                    >
+                                        {translate(lang, undoState.isLoading ? "Undoing..." : "Undo")}
+                                    </Button>
+                                )}
                             </div>
                         ))}
                         {request.isLoading && (

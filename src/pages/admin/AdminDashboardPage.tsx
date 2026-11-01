@@ -17,6 +17,11 @@ import NoticeBoard from "@/shared/components/dashboard/NoticeBoard";
 import AdminFleetActions from "@/features/admin/components/AdminFleetActions";
 import AdminFleetControls from "@/features/admin/components/AdminFleetControls";
 import AdminComplaintInbox from "@/features/admin/components/AdminComplaintInbox";
+import ProfileEditor from "@/features/profile/components/ProfileEditor";
+import CreateScopedAdmin from "@/features/admin/components/CreateScopedAdmin";
+import AnnouncementManager from "@/features/admin/components/AnnouncementManager";
+import AdminCongestionReport from "@/features/admin/components/AdminCongestionReport";
+import AccountRestrictions from "@/features/admin/components/AccountRestrictions";
 
 /** Combines operational summaries, review queues, controls, search, and the fleet map. */
 export default function AdminDashboardPage() {
@@ -43,6 +48,9 @@ export default function AdminDashboardPage() {
         >
             <div className="space-y-5">
                 <NoticeBoard audience="admin" />
+                {(localStorage.getItem("role") === "super_admin" || (summary && !summary.isObserver)) && (
+                    <AnnouncementManager />
+                )}
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                     {(
                         [
@@ -65,8 +73,18 @@ export default function AdminDashboardPage() {
                     ))}
                 </div>
 
-                <AdminApprovals />
+                <ProfileEditor />
+                {localStorage.getItem("role") === "super_admin" && (
+                    <>
+                        <CreateScopedAdmin />
+                        <AdminApprovals />
+                    </>
+                )}
+                {(localStorage.getItem("role") === "super_admin" || (summary && !summary.isObserver)) && (
+                    <AccountRestrictions />
+                )}
                 <AdminFleetActions />
+                <AdminCongestionReport />
                 <AdminFleetControls />
                 <AdminComplaintInbox />
                 <Card className="space-y-4 p-5 sm:p-6">

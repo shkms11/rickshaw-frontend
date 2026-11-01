@@ -30,7 +30,7 @@ export const rickshawApi = api.injectEndpoints({
         }),
         createRickshaw: builder.mutation<
             { rickshaw: Rickshaw },
-            { plateNo: string; model?: string }
+            { model?: string }
         >({
             query: (body) => ({
                 url: "/rickshaws",

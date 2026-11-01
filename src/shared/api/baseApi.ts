@@ -31,6 +31,11 @@ export const api = createApi({
         "Rickshaw",
         "FleetAction",
         "Subscription",
+        "Profile",
+        "Announcement",
+        "NoticeBoard",
+        "OwnerRentalIncome",
+        "ManagedAccounts",
     ],
 
     endpoints: () => ({}),

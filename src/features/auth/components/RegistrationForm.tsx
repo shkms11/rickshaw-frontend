@@ -23,7 +23,6 @@ export default function RegistrationForm({
     phone: "",
     email: "",
     password: "",
-    licenseNo: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -59,7 +58,6 @@ export default function RegistrationForm({
           email: form.email.trim().toLowerCase(),
           password: form.password,
           role: role.toUpperCase(),
-          ...(role === "driver" && { licenseNo: form.licenseNo.trim() }),
         }),
       });
 
@@ -112,21 +110,6 @@ export default function RegistrationForm({
         />
       </div>
 
-      {role === "driver" && (
-        <div className="space-y-2">
-          <label htmlFor="licenseNo">
-            {translate(lang, "Driving License Number")}
-          </label>
-          <Input
-            id="licenseNo"
-            autoComplete="off"
-            value={form.licenseNo}
-            onChange={(e) => update("licenseNo", e.target.value)}
-            required
-          />
-        </div>
-      )}
-
       <div className="space-y-2">
         <label htmlFor="phone">{translate(lang, "Phone number")}</label>
         <Input
@@ -158,7 +141,7 @@ export default function RegistrationForm({
           id="password"
           type="password"
           autoComplete="new-password"
-          minLength={8}
+          minLength={import.meta.env.PROD ? 8 : 4}
           value={form.password}
           onChange={(e) => update("password", e.target.value)}
           required

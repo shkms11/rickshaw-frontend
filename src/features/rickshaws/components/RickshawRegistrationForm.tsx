@@ -28,7 +28,6 @@ function getErrorMessage(error: unknown) {
 export default function RickshawRegistrationForm() {
   const { lang } = useAppSelector((state) => state.ui);
   const [createRickshaw, { isLoading }] = useCreateRickshawMutation();
-  const [plateNo, setPlateNo] = useState("");
   const [model, setModel] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -40,10 +39,8 @@ export default function RickshawRegistrationForm() {
 
     try {
       await createRickshaw({
-        plateNo: plateNo.trim().toUpperCase(),
         ...(model.trim() && { model: model.trim() }),
       }).unwrap();
-      setPlateNo("");
       setModel("");
       setMessage(translate(lang, "Rickshaw registered."));
     } catch (requestError) {
@@ -63,19 +60,7 @@ export default function RickshawRegistrationForm() {
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={(event) => void handleSubmit(event)} className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
-          <div className="space-y-2">
-            <Label htmlFor="new-rickshaw-plate">{translate(lang, "Plate number")}</Label>
-            <Input
-              id="new-rickshaw-plate"
-              value={plateNo}
-              onChange={(event) => setPlateNo(event.target.value)}
-              placeholder={translate(lang, "Plate number")}
-              required
-              minLength={2}
-              maxLength={32}
-            />
-          </div>
+        <form onSubmit={(event) => void handleSubmit(event)} className="grid gap-3 sm:grid-cols-[1fr_auto]">
           <div className="space-y-2">
             <Label htmlFor="new-rickshaw-model">{translate(lang, "Model (optional)")}</Label>
             <Input
@@ -85,6 +70,9 @@ export default function RickshawRegistrationForm() {
               placeholder={translate(lang, "Model (optional)")}
               maxLength={80}
             />
+            <p className="text-xs text-muted-foreground">
+              {translate(lang, "A unique vehicle number is generated from your registered phone and fleet sequence.")}
+            </p>
           </div>
           <Button type="submit" disabled={isLoading} className="self-end bg-emerald-700 text-white hover:bg-emerald-800">
             {translate(lang, isLoading ? "Saving..." : "Add rickshaw")}

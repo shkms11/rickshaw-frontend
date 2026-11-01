@@ -13,6 +13,8 @@ import { translate } from "@/shared/i18n";
 import NoticeBoard from "@/shared/components/dashboard/NoticeBoard";
 import OwnerSubscriptionPanel from "@/features/subscriptions/components/OwnerSubscriptionPanel";
 import { useGetOwnerSubscriptionQuery } from "@/features/subscriptions/api/subscriptionApi";
+import ProfileEditor from "@/features/profile/components/ProfileEditor";
+import OwnerRentalIncome from "@/features/owner/components/dashboard/OwnerRentalIncome";
 
 /** Presents an owner's subscription, fleet records, assignments, locations, and reports. */
 export default function OwnerDashboardPage() {
@@ -41,6 +43,7 @@ export default function OwnerDashboardPage() {
     <DashboardLayout title="Fleet Owner Dashboard">
       <div className="space-y-5">
         <NoticeBoard audience="owner" />
+        <ProfileEditor />
         <OwnerSubscriptionPanel
           subscription={subscription}
           rickshawCount={fleet.filter((item) => item.status !== "INACTIVE").length}
@@ -49,6 +52,7 @@ export default function OwnerDashboardPage() {
           checkoutResult={checkoutResult}
           onRetry={() => void refetchSubscription()}
         />
+        <OwnerRentalIncome />
         <div className="grid gap-4 sm:grid-cols-3">
           <Card className="p-5">
             <p className="text-sm text-muted-foreground">{translate(lang, "Registered rickshaws")}</p>

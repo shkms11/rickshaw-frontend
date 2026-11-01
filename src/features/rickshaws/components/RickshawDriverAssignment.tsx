@@ -74,14 +74,20 @@ export default function RickshawDriverAssignment({
       <div className="text-sm">
         <p className="font-medium">{translate(lang, "Assigned driver")}</p>
         {rickshaw.driver ? (
-          <p className="text-muted-foreground">
-            {rickshaw.driver.user.name} · {rickshaw.driver.user.phone ?? translate(lang, "Phone unavailable")}
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-muted-foreground">
+              {rickshaw.driver.user.name} · {rickshaw.driver.user.phone ?? translate(lang, "Phone unavailable")}
+            </p>
+            <DriverLocationButton
+              driverId={rickshaw.driver.id}
+              onSelect={onViewDriverLocation}
+            />
+          </div>
         ) : (
           <p className="text-muted-foreground">{translate(lang, "No driver assigned")}</p>
         )}
       </div>
-      {rickshaw.status === "ACTIVE" && (
+      {rickshaw.status === "ACTIVE" && !rickshaw.driver && (
         <>
           <form onSubmit={(event) => void findDriver(event)} className="flex flex-col gap-2 sm:flex-row">
             <Input
@@ -128,18 +134,18 @@ export default function RickshawDriverAssignment({
               )}
             </div>
           )}
-          {rickshaw.driver && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              disabled={assignmentState.isLoading}
-              onClick={() => void applyAssignment(null)}
-            >
-              {translate(lang, "Unassign driver")}
-            </Button>
-          )}
         </>
+      )}
+      {rickshaw.status === "ACTIVE" && rickshaw.driver && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={assignmentState.isLoading}
+          onClick={() => void applyAssignment(null)}
+        >
+          {translate(lang, "Unassign driver")}
+        </Button>
       )}
       {message && <p role="status" className="text-sm text-emerald-700">{message}</p>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}

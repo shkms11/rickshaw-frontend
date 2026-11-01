@@ -9,6 +9,7 @@ export type DriverLocation = {
     source: "LIVE" | "LAST_KNOWN" | "DEMO";
     isLive: boolean;
     driverName: string;
+    driverPhone: string | null;
     rickshawPlate: string | null;
     ownerName: string | null;
 };

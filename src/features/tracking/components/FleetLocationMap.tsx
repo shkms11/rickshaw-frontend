@@ -1,10 +1,12 @@
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState, type FormEvent } from "react";
 import { Circle, MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { type Marker as LeafletMarker } from "leaflet";
-import { CarFront, Clock3, MapPin, MapPinned, Radio, UserRound } from "lucide-react";
+import { CarFront, Clock3, LoaderCircle, MapPin, MapPinned, Phone, Radio, Search, UserRound } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useAppSelector } from "@/app/hooks";
 import { getAuthenticatedRole } from "@/shared/authSession";
 import { translate } from "@/shared/i18n";
@@ -13,6 +15,51 @@ import {
     useGetDriverLocationsQuery,
     type DriverLocation,
 } from "@/features/tracking/api/locationApi";
+
+type PlaceResult = {
+    lat: string;
+    lon: string;
+    display_name: string;
+};
+
+const geocodeCache = new Map<string, string>();
+let lastGeocoderRequest = 0;
+let geocoderQueue = Promise.resolve();
+
+async function nominatimRequest<T>(url: string): Promise<T> {
+    const request = geocoderQueue.then(async () => {
+        const wait = Math.max(0, 1100 - (Date.now() - lastGeocoderRequest));
+        if (wait) await new Promise((resolve) => setTimeout(resolve, wait));
+        lastGeocoderRequest = Date.now();
+        const response = await fetch(url, {
+            headers: { Accept: "application/json" },
+        });
+        if (!response.ok) throw new Error(`Geocoding request failed (${response.status})`);
+        return response.json() as Promise<T>;
+    });
+    geocoderQueue = request.then(() => undefined, () => undefined);
+    return request;
+}
+
+function getAreaName(address: Record<string, string> | undefined) {
+    if (!address) return "";
+    const parts = [
+        address.neighbourhood,
+        address.suburb,
+        address.city_district,
+        address.city ?? address.town ?? address.village,
+        address.county,
+        address.state,
+    ].filter((part, index, values) => Boolean(part) && values.indexOf(part) === index);
+    return parts.slice(0, 3).join(", ");
+}
+
+function formatGeocoderError(error: unknown) {
+    if (error instanceof Error && error.message.startsWith("Geocoding request failed")) {
+        return error.message;
+    }
+    return "Could not find this place. Try a nearby area or district name.";
+}
 
 function createDriverIcon(isLive: boolean, selected: boolean) {
     const color = isLive ? "#059669" : "#d97706";
@@ -37,9 +84,11 @@ function formatAccuracy(accuracy: number) {
 function MapViewController({
     locations,
     selectedLocation,
+    searchedPlace,
 }: {
     locations: DriverLocation[];
     selectedLocation?: DriverLocation;
+    searchedPlace: { latitude: number; longitude: number } | null;
 }) {
     const map = useMap();
     const hasFittedLocations = useRef(false);
@@ -78,6 +127,11 @@ function MapViewController({
         selectedLongitude,
     ]);
 
+    useEffect(() => {
+        if (!searchedPlace) return;
+        map.flyTo([searchedPlace.latitude, searchedPlace.longitude], 15);
+    }, [map, searchedPlace]);
+
     return null;
 }
 
@@ -94,16 +148,53 @@ function DriverMarker({
     showOwner: boolean;
 }) {
     const markerRef = useRef<LeafletMarker>(null);
+    const [popupOpen, setPopupOpen] = useState(false);
+    const [areaLookup, setAreaLookup] = useState<{ key: string; name: string } | null>(null);
+    const areaKey = `${location.latitude.toFixed(4)},${location.longitude.toFixed(4)}`;
+    const areaName = geocodeCache.get(areaKey) ??
+        (areaLookup?.key === areaKey ? areaLookup.name : "");
+    const areaLoading = popupOpen && !areaName && areaLookup?.key !== areaKey;
 
     useEffect(() => {
         if (selected) markerRef.current?.openPopup();
     }, [selected]);
+
+    useEffect(() => {
+        if (!popupOpen) return;
+        const key = areaKey;
+        if (geocodeCache.has(key)) return;
+        let active = true;
+        const params = new URLSearchParams({
+            format: "jsonv2",
+            lat: String(location.latitude),
+            lon: String(location.longitude),
+            zoom: "16",
+            addressdetails: "1",
+        });
+        void nominatimRequest<{ address?: Record<string, string> }>(
+            `https://nominatim.openstreetmap.org/reverse?${params.toString()}`,
+        ).then((result) => {
+            const name = getAreaName(result.address);
+            if (name) geocodeCache.set(key, name);
+            if (active) setAreaLookup({ key, name });
+        }).catch((error: unknown) => {
+            if (active) console.error("Reverse geocode driver location error:", error);
+            if (active) setAreaLookup({ key, name: "" });
+        });
+        return () => {
+            active = false;
+        };
+    }, [areaKey, location.latitude, location.longitude, popupOpen]);
 
     return (
         <Marker
             ref={markerRef}
             position={[location.latitude, location.longitude]}
             icon={createDriverIcon(location.isLive, selected)}
+            eventHandlers={{
+                popupopen: () => setPopupOpen(true),
+                popupclose: () => setPopupOpen(false),
+            }}
         >
             <Popup className="driver-location-popup" minWidth={270} maxWidth={300}>
                 <div className="w-[270px] overflow-hidden rounded-xl bg-white text-slate-900">
@@ -144,6 +235,18 @@ function DriverMarker({
 
                     <div className="space-y-3 px-4 py-3">
                         <div className="space-y-2 border-b pb-3">
+                            {location.driverPhone && (
+                                <div className="flex items-center gap-2 text-sm">
+                                    <Phone className="size-4 shrink-0 text-slate-400" aria-hidden="true" />
+                                    <span className="text-xs text-slate-500">{translate(lang, "Phone")}</span>
+                                    <a
+                                        href={`tel:${location.driverPhone}`}
+                                        className="ml-auto text-right text-xs font-medium text-emerald-800 underline-offset-2 hover:underline"
+                                    >
+                                        {location.driverPhone}
+                                    </a>
+                                </div>
+                            )}
                             <div className="flex items-center gap-2 text-sm">
                                 <CarFront className="size-4 shrink-0 text-slate-400" aria-hidden="true" />
                                 <span className="text-xs text-slate-500">{translate(lang, "Vehicle")}</span>
@@ -163,6 +266,17 @@ function DriverMarker({
                         </div>
 
                         <div className="rounded-lg bg-slate-50 p-3">
+                            <div className="mb-2 border-b border-slate-200 pb-2">
+                                <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
+                                    <MapPin className="size-3.5 text-emerald-700" aria-hidden="true" />
+                                    {translate(lang, "Area")}
+                                </div>
+                                <p className="mt-1 text-xs font-semibold text-slate-800">
+                                    {areaLoading
+                                        ? translate(lang, "Finding area...")
+                                        : areaName || translate(lang, "Area name unavailable")}
+                                </p>
+                            </div>
                             <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
                                 <MapPin className="size-3.5 text-emerald-700" aria-hidden="true" />
                                 {translate(lang, "GPS coordinates")}
@@ -207,6 +321,11 @@ export default function FleetLocationMap({ selectedDriverId = null }: Props) {
     const { lang } = useAppSelector((state) => state.ui);
     const role = getAuthenticatedRole();
     const mapCard = useRef<HTMLDivElement>(null);
+    const [placeQuery, setPlaceQuery] = useState("");
+    const [placeResults, setPlaceResults] = useState<PlaceResult[]>([]);
+    const [placeError, setPlaceError] = useState("");
+    const [isSearchingPlaces, setIsSearchingPlaces] = useState(false);
+    const [searchedPlace, setSearchedPlace] = useState<{ latitude: number; longitude: number } | null>(null);
     const { data, isLoading, isError } = useGetDriverLocationsQuery(undefined, {
         pollingInterval: 15000,
     });
@@ -216,6 +335,36 @@ export default function FleetLocationMap({ selectedDriverId = null }: Props) {
     const selectedLocation = locations.find(
         (location) => location.driverId === selectedDriverId,
     );
+
+    async function searchPlaces(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        const query = placeQuery.trim();
+        if (!query || isSearchingPlaces) return;
+        setPlaceError("");
+        setPlaceResults([]);
+        setIsSearchingPlaces(true);
+        const params = new URLSearchParams({
+            q: `${query}, Bangladesh`,
+            format: "jsonv2",
+            addressdetails: "1",
+            countrycodes: "bd",
+            limit: "5",
+            viewbox: "88,26.7,92.7,20.5",
+            bounded: "1",
+        });
+        try {
+            const results = await nominatimRequest<PlaceResult[]>(
+                `https://nominatim.openstreetmap.org/search?${params.toString()}`,
+            );
+            setPlaceResults(results);
+            if (!results.length) setPlaceError("No matching places found in Bangladesh.");
+        } catch (error) {
+            console.error("Search Bangladesh map places error:", error);
+            setPlaceError(formatGeocoderError(error));
+        } finally {
+            setIsSearchingPlaces(false);
+        }
+    }
 
     useEffect(() => {
         if (selectedDriverId) {
@@ -283,6 +432,61 @@ export default function FleetLocationMap({ selectedDriverId = null }: Props) {
                 ) : (
                     <>
                         <div className="relative bg-slate-100 p-2 sm:p-3">
+                            {role !== "owner" && (
+                            <div className="mb-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+                                <form className="flex flex-col gap-2 sm:flex-row" onSubmit={(event) => void searchPlaces(event)}>
+                                    <label className="relative min-w-0 flex-1">
+                                        <span className="sr-only">{translate(lang, "Search a place in Bangladesh")}</span>
+                                        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                                        <Input
+                                            value={placeQuery}
+                                            onChange={(event) => setPlaceQuery(event.target.value)}
+                                            placeholder={translate(lang, "Search an area, road, or district in Bangladesh")}
+                                            className="h-10 pl-9"
+                                        />
+                                    </label>
+                                    <Button
+                                        type="submit"
+                                        disabled={isSearchingPlaces || !placeQuery.trim()}
+                                        className="h-10 bg-emerald-700 text-white hover:bg-emerald-800"
+                                    >
+                                        {isSearchingPlaces && <LoaderCircle className="mr-2 size-4 animate-spin" />}
+                                        {translate(lang, isSearchingPlaces ? "Searching..." : "Search map")}
+                                    </Button>
+                                </form>
+                                {placeResults.length > 0 && (
+                                    <ul className="mt-2 divide-y rounded-lg border" aria-label={translate(lang, "Map search results")}>
+                                        {placeResults.map((place, index) => (
+                                            <li key={`${place.lat}-${place.lon}-${index}`}>
+                                                <button
+                                                    type="button"
+                                                    className="w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-emerald-50"
+                                                    onClick={() => {
+                                                        setSearchedPlace({
+                                                            latitude: Number(place.lat),
+                                                            longitude: Number(place.lon),
+                                                        });
+                                                        setPlaceQuery(place.display_name);
+                                                        setPlaceResults([]);
+                                                    }}
+                                                >
+                                                    <MapPin className="mr-2 inline size-4 text-emerald-700" aria-hidden="true" />
+                                                    {place.display_name}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                                {placeError && <p role="status" className="mt-2 text-sm text-muted-foreground">{translate(lang, placeError)}</p>}
+                                <p className="mt-2 text-[11px] text-muted-foreground">
+                                    {translate(lang, "Place search and area names use OpenStreetMap data.")}
+                                    {" "}
+                                    <a className="underline underline-offset-2" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
+                                        {translate(lang, "OpenStreetMap attribution")}
+                                    </a>
+                                </p>
+                            </div>
+                            )}
                             <div className="overflow-hidden rounded-xl border border-white shadow-inner">
                                 <MapContainer
                                     center={[23.8103, 90.4125]}
@@ -297,6 +501,7 @@ export default function FleetLocationMap({ selectedDriverId = null }: Props) {
                                     <MapViewController
                                         locations={locations}
                                         selectedLocation={selectedLocation}
+                                        searchedPlace={searchedPlace}
                                     />
                                     {locations.map((location) => (
                                         <Fragment key={location.driverId}>

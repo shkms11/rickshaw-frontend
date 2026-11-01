@@ -7,6 +7,9 @@ import { useGetFleetActionsQuery } from "@/features/rickshaws/api/fleetActionApi
 import { useGetMyDriverProfileQuery } from "@/features/driver/api/driverApi";
 import { useAppSelector } from "@/app/hooks";
 import { translate } from "@/shared/i18n";
+import ProfileEditor from "@/features/profile/components/ProfileEditor";
+import DriverWellbeing from "@/features/driver/components/dashboard/DriverWellbeing";
+import DriverActivityCard from "@/features/driver/components/dashboard/DriverActivityCard";
 
 export type DriverAccount = {
     name: string;
@@ -31,6 +34,9 @@ export default function DriverDashboard({ driver }: { driver: DriverAccount }) {
     return (
         <div className="space-y-5">
             <NoticeBoard audience="driver" />
+            <DriverWellbeing />
+            <DriverActivityCard />
+            <ProfileEditor />
             <Card className="p-5 sm:p-6">
                 <p className="text-sm text-muted-foreground">
                     {translate(lang, "Signed in as driver")}
