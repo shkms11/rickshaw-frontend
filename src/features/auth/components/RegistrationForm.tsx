@@ -141,11 +141,14 @@ export default function RegistrationForm({
           id="password"
           type="password"
           autoComplete="new-password"
-          minLength={import.meta.env.PROD ? 8 : 4}
+          minLength={4}
           value={form.password}
           onChange={(e) => update("password", e.target.value)}
           required
         />
+        <p className="text-xs text-muted-foreground">
+          {translate(lang, "Use at least 4 characters.")}
+        </p>
       </div>
 
       <Button

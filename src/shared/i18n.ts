@@ -26,6 +26,7 @@ const bengali: Record<string, string> = {
     payment: "পেমেন্ট",
     complaint: "অভিযোগ",
     Password: "পাসওয়ার্ড",
+    "Use at least 4 characters.": "কমপক্ষে ৪টি অক্ষর দিন।",
     "Enter password": "পাসওয়ার্ড লিখুন",
     Login: "লগইন",
     "Logging in...": "লগইন হচ্ছে...",
