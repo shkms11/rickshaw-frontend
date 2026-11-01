@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import DashboardLayout from "@/shared/components/layout/DashboardLayout";
 import { Card } from "@/components/ui/card";
 import AdminApprovals from "@/features/admin/components/AdminApprovals";
@@ -25,6 +25,7 @@ import AdminCongestionReport from "@/features/admin/components/AdminCongestionRe
 /** Combines operational summaries, review queues, controls, search, and the fleet map. */
 export default function AdminDashboardPage() {
     const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
+    const mapSectionRef = useRef<HTMLDivElement>(null);
     const [searchAdmin, { data, isFetching, error }] = useLazySearchAdminQuery();
     const {
         data: summary,
@@ -35,6 +36,11 @@ export default function AdminDashboardPage() {
 
     function handleSearch(query: string, type: SearchType) {
         void searchAdmin({ query, type });
+    }
+
+    function handleViewDriverLocation(driverId: string) {
+        setSelectedDriverId(driverId);
+        mapSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     return (
@@ -85,6 +91,7 @@ export default function AdminDashboardPage() {
                     canRestrictAccounts={
                         localStorage.getItem("role") === "super_admin" || Boolean(summary && !summary.isObserver)
                     }
+                    onViewDriverLocation={handleViewDriverLocation}
                 />
                 <AdminComplaintInbox />
                 <Card className="space-y-4 p-5 sm:p-6">
@@ -94,10 +101,12 @@ export default function AdminDashboardPage() {
                         hasSearched={isFetching || !!data || !!error}
                         isLoading={isFetching}
                         error={Boolean(error)}
-                        onViewDriverLocation={setSelectedDriverId}
+                        onViewDriverLocation={handleViewDriverLocation}
                     />
                 </Card>
-                <FleetLocationMap selectedDriverId={selectedDriverId} />
+                <div ref={mapSectionRef}>
+                    <FleetLocationMap selectedDriverId={selectedDriverId} />
+                </div>
             </div>
         </DashboardLayout>
     );

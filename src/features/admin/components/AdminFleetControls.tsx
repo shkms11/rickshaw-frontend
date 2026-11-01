@@ -16,6 +16,7 @@ import {
   useUpdateRickshawStatusMutation,
   type Rickshaw,
 } from "@/features/rickshaws/api/rickshawApi";
+import DriverLocationButton from "@/features/tracking/components/DriverLocationButton";
 import { translate } from "@/shared/i18n";
 
 const pageSize = 20;
@@ -64,7 +65,13 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 /** Searchable, server-paginated fleet controls; loads only the active tab and page. */
-export default function AdminFleetControls({ canRestrictAccounts = true }: { canRestrictAccounts?: boolean }) {
+export default function AdminFleetControls({
+  canRestrictAccounts = true,
+  onViewDriverLocation,
+}: {
+  canRestrictAccounts?: boolean;
+  onViewDriverLocation: (driverId: string) => void;
+}) {
   const { lang } = useAppSelector((state) => state.ui);
   const [tab, setTab] = useState<FleetTab>("vehicles");
   const [search, setSearch] = useState("");
@@ -262,6 +269,7 @@ export default function AdminFleetControls({ canRestrictAccounts = true }: { can
             lang={lang}
             updatingId={updatingId}
             canRestrictAccounts={canRestrictAccounts}
+            onViewDriverLocation={onViewDriverLocation}
             onStatusChange={(driver, status) => void setDriverStatus(driver, status)}
             onRestrictionChange={(driver) => void setAccountRestriction(driver.user)}
           />
@@ -358,6 +366,7 @@ function DriverList({
   lang,
   updatingId,
   canRestrictAccounts,
+  onViewDriverLocation,
   onStatusChange,
   onRestrictionChange,
 }: {
@@ -365,6 +374,7 @@ function DriverList({
   lang: "en" | "bn";
   updatingId: string | null;
   canRestrictAccounts: boolean;
+  onViewDriverLocation: (driverId: string) => void;
   onStatusChange: (driver: AdminFleetDriver, status: AdminFleetDriver["status"]) => void;
   onRestrictionChange: (driver: AdminFleetDriver) => void;
 }) {
@@ -392,6 +402,12 @@ function DriverList({
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            {driver.rickshaw && (
+              <DriverLocationButton
+                driverId={driver.id}
+                onSelect={onViewDriverLocation}
+              />
+            )}
             <label className="flex shrink-0 items-center gap-2 text-sm">
               <span className="text-muted-foreground">{translate(lang, "Availability")}</span>
               <select
