@@ -93,7 +93,9 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
                 authenticatedRole !== role &&
                 !(role === "admin" && authenticatedRole === "super_admin")
             ) {
-                throw new Error("This account does not match the selected role.");
+                throw new Error(
+                    "This account does not match the selected role.",
+                );
             }
 
             localStorage.setItem("token", data.token);
@@ -125,12 +127,17 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
                     {translate(lang, roleTitles[role])}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                    {translate(lang, "Enter your details to access your account.")}
+                    {translate(
+                        lang,
+                        "Enter your details to access your account.",
+                    )}
                 </p>
             </div>
 
             <div className="space-y-2">
-                <label htmlFor="login-identifier">{translate(lang, "Email or Bangladesh phone")}</label>
+                <label htmlFor="login-identifier">
+                    {translate(lang, "Email or phone")}
+                </label>
                 <Input
                     id="login-identifier"
                     type="text"
@@ -144,7 +151,9 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
             </div>
 
             <div className="space-y-2">
-                <label htmlFor="login-password">{translate(lang, "Password")}</label>
+                <label htmlFor="login-password">
+                    {translate(lang, "Password")}
+                </label>
 
                 <div className="relative">
                     <Input
@@ -160,12 +169,10 @@ export default function LoginForm({ role, onBack, onSubmit }: LoginFormProps) {
 
                     <button
                         type="button"
-                        aria-label={
-                            translate(
-                                lang,
-                                showPassword ? "Hide password" : "Show password",
-                            )
-                        }
+                        aria-label={translate(
+                            lang,
+                            showPassword ? "Hide password" : "Show password",
+                        )}
                         aria-pressed={showPassword}
                         onClick={() => setShowPassword((previous) => !previous)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
